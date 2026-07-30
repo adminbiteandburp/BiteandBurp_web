@@ -275,10 +275,10 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
 
           final data = snapshot.data() as Map<String, dynamic>?;
           // Dono fields check karo: POS app wala 'isOccupied' bhi aur string 'status' bhi
+          // FIX: data == null par session wipe nahi hoga. Sirf explicit POS clear par hoga.
           final isTableFree =
-              data == null ||
-              data['isOccupied'] == false ||
-              data['status'] == 'Available';
+              data != null &&
+              (data['isOccupied'] == false || data['status'] == 'Available');
 
           if (isTableFree) {
             // Sirf tabhi wipe karo jab order actually place ho chuka ho (yani session actually khatam hua ho)
