@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -175,6 +176,111 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
                 addOns: parsedAddons,
               ),
             );
+          }
+
+          // 🌟 FIX: Injecting Mock Items ONLY for Localhost / Debug Mode
+          if (kDebugMode) {
+            final List<Map<String, dynamic>> mockItems = [
+              {
+                "id": "mock_1",
+                "name": "Mock Test Burger",
+                "price": 30.0,
+                "category": "Testing",
+                "isVeg": true,
+                "variants": [
+                  {"name": "Small", "price": 0.0},
+                  {"name": "Medium", "price": 15.0},
+                ],
+                "addOns": [
+                  {"name": "Extra Cheese", "price": 10.0},
+                ],
+              },
+              {
+                "id": "mock_2",
+                "name": "Mock Test Pizza",
+                "price": 30.0,
+                "category": "Testing",
+                "isVeg": true,
+                "variants": [
+                  {"name": "Regular", "price": 0.0},
+                  {"name": "Cheese Burst", "price": 120.0},
+                ],
+                "addOns": [
+                  {"name": "Olives", "price": 15.0},
+                ],
+              },
+              {
+                "id": "mock_3",
+                "name": "Mock Test Pasta",
+                "price": 30.0,
+                "category": "Testing",
+                "isVeg": true,
+                "variants": [
+                  {"name": "Half", "price": 0.0},
+                  {"name": "Full", "price": 40.0},
+                ],
+                "addOns": [
+                  {"name": "Garlic Bread", "price": 25.0},
+                ],
+              },
+              {
+                "id": "mock_4",
+                "name": "Mock Test Coffee",
+                "price": 30.0,
+                "category": "Testing",
+                "isVeg": true,
+                "variants": [
+                  {"name": "Hot", "price": 0.0},
+                  {"name": "Frappe", "price": 30.0},
+                ],
+                "addOns": [
+                  {"name": "Extra Shot", "price": 20.0},
+                ],
+              },
+              {
+                "id": "mock_5",
+                "name": "Mock Test Shake",
+                "price": 30.0,
+                "category": "Testing",
+                "isVeg": true,
+                "variants": [
+                  {"name": "Classic", "price": 0.0},
+                  {"name": "Freakshake", "price": 100.0},
+                ],
+                "addOns": [
+                  {"name": "Ice Cream Scoop", "price": 20.0},
+                ],
+              },
+            ];
+            // 🌟 FIX: Used a traditional for-loop with strict type-casting to solve the closure type error
+            for (var item in mockItems) {
+              Map<String, double> vMap = {};
+              if (item['variants'] != null) {
+                // <-- Yahan opening bracket '{' add kiya gaya hai
+                for (var v in (item['variants'] as List)) {
+                  vMap[v['name'].toString()] = (v['price'] as num).toDouble();
+                }
+              }
+
+              Map<String, double> aMap = {};
+              if (item['addOns'] != null) {
+                for (var a in (item['addOns'] as List)) {
+                  aMap[a['name'].toString()] = (a['price'] as num).toDouble();
+                }
+              }
+
+              fetchedItems.add(
+                MenuItem(
+                  id: item['id'].toString(),
+                  name: item['name'].toString(),
+                  price: (item['price'] as num).toDouble(),
+                  isVeg: item['isVeg'] == true,
+                  category: item['category'].toString(),
+                  variants: vMap,
+                  addOns: aMap,
+                ),
+              );
+            }
           }
 
           setState(() {
@@ -935,45 +1041,60 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
       };
     });
 
+    // 🌟 INSTANT TABLE LOCK: Database writes shuru hone se pehle hi lock laga do
+    isPlacingOrderLock = true;
+
     try {
-      await FirebaseFirestore.instance
+      WriteBatch batch = FirebaseFirestore.instance.batch();
+
+      DocumentReference orderRef = FirebaseFirestore.instance
           .collection('restaurants')
           .doc(widget.hotelId)
           .collection('live_orders')
-          .add({
-            // 🌟 BUG 4 FIX: POS App format match karne ke liye "Table " word ko clean kar diya
-            'tableId': widget.tableId
-                .toString()
-                .replaceAll('Table ', '')
-                .trim(),
-            'tableName':
-                'Table ${widget.tableId.toString().replaceAll('Table ', '').trim()}',
-            'customerName': customerName, // Session data pass
-            'customerPhone': customerPhone, // Session data pass
-            'totalAmount': cartTotal,
-            'items': detailedItems,
-            'overallNote': overallNote,
-            'status': 'Sent to Kitchen',
-            'time': FieldValue.serverTimestamp(),
-          });
+          .doc();
 
-      // 🌟 INSTANT TABLE LOCK: Web app khud bhi table ko occupied mark karega
-      // Taaki refresh karne par race-condition ki wajah se session na ude
-      isPlacingOrderLock = true; // Lock session clear listener
-
-      await FirebaseFirestore.instance
+      DocumentReference tableRef = FirebaseFirestore.instance
           .collection('restaurants')
           .doc(widget.hotelId)
           .collection('tables')
-          .doc(widget.tableId)
-          .update({'isOccupied': true, 'status': 'Occupied'});
+          .doc(widget.tableId);
+
+      batch.set(orderRef, {
+        // 🌟 BUG 4 FIX: POS App format match karne ke liye "Table " word ko clean kar diya
+        'tableId': widget.tableId.toString().replaceAll('Table ', '').trim(),
+        'tableName':
+            'Table ${widget.tableId.toString().replaceAll('Table ', '').trim()}',
+        'customerName': customerName, // Session data pass
+        'customerPhone': customerPhone, // Session data pass
+        'totalAmount': cartTotal,
+        'items': detailedItems,
+        'overallNote': overallNote,
+        'status': 'Sent to Kitchen',
+        'time': FieldValue.serverTimestamp(),
+      });
+
+      batch.update(tableRef, {'isOccupied': true, 'status': 'Occupied'});
+
+      // Dono operations ek sath execute honge, fail hue toh ghost order nahi banega
+      await batch.commit();
 
       // Wait for 5 seconds cooldown to allow stream to fully catch up
       await Future.delayed(const Duration(seconds: 5));
       isPlacingOrderLock = false; // Release lock
     } catch (e) {
       isPlacingOrderLock = false;
-      debugPrint("Firebase sync issue, continuing locally: $e");
+      if (mounted) {
+        setState(() => isPlacingOrder = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              "There's an error placing your order, please try again.",
+            ),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
+      return; // 🌟 FAIL-SAFE: Yahan se aage ka execution (cart clear, success sound) rok do
     }
 
     setState(() {
@@ -1317,7 +1438,7 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
                                   ],
                                 ),
 
-                                // 🌟 FIX: AnimatedSize for smooth drop down
+                                // 🌟 FIX: Item Note - Dynamic TextField to Saved Label Switch (No '+' icon)
                                 AnimatedSize(
                                   duration: const Duration(milliseconds: 250),
                                   curve: Curves.easeOutCubic,
@@ -1325,97 +1446,197 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
                                       (isNoteOpen ||
                                           (itemNotes[itemName] ?? "")
                                               .isNotEmpty)
-                                      ? Padding(
-                                          padding: const EdgeInsets.only(
-                                            top: 10,
-                                          ),
-                                          child: SizedBox(
-                                            height:
-                                                40, // 🌟 FIX: Fixed height matching all
-                                            child: TextField(
-                                              autofocus:
-                                                  (itemNotes[itemName] ?? "")
-                                                      .isEmpty,
-                                              onChanged: (val) =>
-                                                  itemNotes[itemName] = val,
-                                              onTapOutside: (_) {
-                                                FocusManager
-                                                    .instance
-                                                    .primaryFocus
-                                                    ?.unfocus();
-                                                if ((itemNotes[itemName] ?? "")
-                                                    .trim()
-                                                    .isEmpty) {
-                                                  setModalState(
-                                                    () =>
-                                                        showNoteField[itemName] =
-                                                            false,
-                                                  );
-                                                }
-                                              },
-                                              onSubmitted: (val) {
-                                                if (val.trim().isEmpty) {
-                                                  setModalState(
-                                                    () =>
-                                                        showNoteField[itemName] =
-                                                            false,
-                                                  );
-                                                }
-                                              },
-                                              controller:
-                                                  TextEditingController(
-                                                      text: itemNotes[itemName],
-                                                    )
-                                                    ..selection =
-                                                        TextSelection.fromPosition(
-                                                          TextPosition(
-                                                            offset:
-                                                                (itemNotes[itemName] ??
-                                                                        "")
-                                                                    .length,
-                                                          ),
+                                      ? (showNoteField[itemName] ?? false)
+                                            ? Padding(
+                                                padding: const EdgeInsets.only(
+                                                  top: 10,
+                                                ),
+                                                child: SizedBox(
+                                                  height: 40,
+                                                  child: TextField(
+                                                    autofocus:
+                                                        (itemNotes[itemName] ??
+                                                                "")
+                                                            .isEmpty,
+                                                    onChanged: (val) =>
+                                                        setModalState(
+                                                          () =>
+                                                              itemNotes[itemName] =
+                                                                  val,
                                                         ),
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 13,
-                                              ),
-                                              decoration: InputDecoration(
-                                                hintText: "E.g. Less spicy...",
-                                                hintStyle: GoogleFonts.poppins(
-                                                  fontSize: 13,
-                                                  color: Colors.black38,
-                                                ),
-                                                contentPadding:
-                                                    const EdgeInsets.only(
-                                                      left: 15,
-                                                      right: 5,
-                                                    ), // Tightened right for icon
-                                                filled: true,
-                                                fillColor: Colors.black
-                                                    .withOpacity(0.05),
-                                                border: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  borderSide: BorderSide.none,
-                                                ),
-                                                // 🌟 FIX: Premium Close Button added
-                                                suffixIcon: GestureDetector(
-                                                  onTap: () {
-                                                    setModalState(() {
-                                                      itemNotes[itemName] = "";
-                                                      showNoteField[itemName] =
-                                                          false;
-                                                    });
-                                                  },
-                                                  child: const Icon(
-                                                    Icons.close,
-                                                    size: 18,
-                                                    color: Colors.black45,
+                                                    onSubmitted: (val) {
+                                                      if (val.trim().isNotEmpty)
+                                                        setModalState(
+                                                          () =>
+                                                              showNoteField[itemName] =
+                                                                  false,
+                                                        );
+                                                    },
+                                                    controller:
+                                                        TextEditingController(
+                                                            text:
+                                                                itemNotes[itemName],
+                                                          )
+                                                          ..selection =
+                                                              TextSelection.fromPosition(
+                                                                TextPosition(
+                                                                  offset:
+                                                                      (itemNotes[itemName] ??
+                                                                              "")
+                                                                          .length,
+                                                                ),
+                                                              ),
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 13,
+                                                    ),
+                                                    decoration: InputDecoration(
+                                                      hintText:
+                                                          "E.g. Less spicy...",
+                                                      hintStyle:
+                                                          GoogleFonts.poppins(
+                                                            fontSize: 13,
+                                                            color:
+                                                                Colors.black38,
+                                                          ),
+                                                      contentPadding:
+                                                          const EdgeInsets.only(
+                                                            left: 15,
+                                                            right: 5,
+                                                          ),
+                                                      filled: true,
+                                                      fillColor: Colors.black
+                                                          .withOpacity(0.05),
+                                                      border: OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              10,
+                                                            ),
+                                                        borderSide:
+                                                            BorderSide.none,
+                                                      ),
+                                                      suffixIcon:
+                                                          (itemNotes[itemName] ??
+                                                                  "")
+                                                              .trim()
+                                                              .isEmpty
+                                                          ? IconButton(
+                                                              icon: const Icon(
+                                                                Icons.close,
+                                                                size: 18,
+                                                                color: Colors
+                                                                    .black45,
+                                                              ),
+                                                              onPressed: () {
+                                                                FocusManager
+                                                                    .instance
+                                                                    .primaryFocus
+                                                                    ?.unfocus();
+                                                                setModalState(() {
+                                                                  itemNotes[itemName] =
+                                                                      "";
+                                                                  showNoteField[itemName] =
+                                                                      false;
+                                                                });
+                                                              },
+                                                            )
+                                                          : IconButton(
+                                                              icon: const Icon(
+                                                                Icons
+                                                                    .check_circle,
+                                                                size: 22,
+                                                                color: Colors
+                                                                    .green,
+                                                              ),
+                                                              onPressed: () {
+                                                                FocusManager
+                                                                    .instance
+                                                                    .primaryFocus
+                                                                    ?.unfocus();
+                                                                setModalState(
+                                                                  () =>
+                                                                      showNoteField[itemName] =
+                                                                          false,
+                                                                ); // Hide TextField, Show Label
+                                                              },
+                                                            ),
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                            ),
-                                          ),
-                                        )
+                                              )
+                                            : Container(
+                                                margin: const EdgeInsets.only(
+                                                  top: 10,
+                                                ),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 12,
+                                                      vertical: 8,
+                                                    ),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.green
+                                                      .withOpacity(0.1),
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                  border: Border.all(
+                                                    color: Colors.green
+                                                        .withOpacity(0.3),
+                                                  ),
+                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    const Icon(
+                                                      Icons.check_circle,
+                                                      color: Colors.green,
+                                                      size: 16,
+                                                    ),
+                                                    const SizedBox(width: 8),
+                                                    Expanded(
+                                                      child: Text(
+                                                        "${itemNotes[itemName]}",
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                              fontSize: 12,
+                                                              color: Colors
+                                                                  .green
+                                                                  .shade800,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                            ),
+                                                      ),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () => setModalState(
+                                                        () =>
+                                                            showNoteField[itemName] =
+                                                                true,
+                                                      ),
+                                                      child: const Icon(
+                                                        Icons.edit,
+                                                        size: 16,
+                                                        color:
+                                                            Colors.deepPurple,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(width: 12),
+                                                    InkWell(
+                                                      onTap: () => setModalState(
+                                                        () {
+                                                          itemNotes[itemName] =
+                                                              "";
+                                                          showNoteField[itemName] =
+                                                              false;
+                                                        },
+                                                      ),
+                                                      child: const Icon(
+                                                        Icons.delete,
+                                                        size: 16,
+                                                        color: Colors.red,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
                                       : const SizedBox.shrink(),
                                 ),
                               ],
@@ -1584,70 +1805,157 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
                                 ),
                               ),
 
-                              // --- STATE 2: TEXTFIELD WTIH CLOSE BUTTON ---
-                              secondChild: SizedBox(
-                                height:
-                                    40, // 🌟 FIX: Exact same 40px height, isliye 1px ka bhi jump nahi hoga!
-                                child: TextField(
-                                  autofocus: overallNote.isEmpty,
-                                  onChanged: (val) => overallNote = val,
-                                  onTapOutside: (_) {
-                                    FocusManager.instance.primaryFocus
-                                        ?.unfocus();
-                                    if (overallNote.trim().isEmpty)
-                                      setModalState(
-                                        () => showOverallNote = false,
-                                      );
-                                  },
-                                  onSubmitted: (val) {
-                                    if (val.trim().isEmpty)
-                                      setModalState(
-                                        () => showOverallNote = false,
-                                      );
-                                  },
-                                  controller:
-                                      TextEditingController(text: overallNote)
-                                        ..selection =
-                                            TextSelection.fromPosition(
-                                              TextPosition(
-                                                offset: overallNote.length,
+                              // --- STATE 2: TEXTFIELD OR SAVED LABEL SWITCH ---
+                              secondChild: showOverallNote
+                                  ? SizedBox(
+                                      height: 40,
+                                      child: TextField(
+                                        autofocus: overallNote.isEmpty,
+                                        onChanged: (val) => setModalState(
+                                          () => overallNote = val,
+                                        ),
+                                        onSubmitted: (val) {
+                                          if (val.trim().isNotEmpty)
+                                            setModalState(
+                                              () => showOverallNote = false,
+                                            );
+                                        },
+                                        controller:
+                                            TextEditingController(
+                                                text: overallNote,
+                                              )
+                                              ..selection =
+                                                  TextSelection.fromPosition(
+                                                    TextPosition(
+                                                      offset:
+                                                          overallNote.length,
+                                                    ),
+                                                  ),
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 13,
+                                        ),
+                                        decoration: InputDecoration(
+                                          hintText: "Overall instructions...",
+                                          prefixIcon: const Icon(
+                                            Icons.comment_outlined,
+                                            size: 18,
+                                            color: Colors.black54,
+                                          ),
+                                          filled: true,
+                                          fillColor: Colors.black.withOpacity(
+                                            0.05,
+                                          ),
+                                          contentPadding: const EdgeInsets.only(
+                                            left: 15,
+                                            right: 5,
+                                          ),
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                            borderSide: BorderSide.none,
+                                          ),
+                                          suffixIcon: overallNote.trim().isEmpty
+                                              ? IconButton(
+                                                  icon: const Icon(
+                                                    Icons.close,
+                                                    size: 18,
+                                                    color: Colors.black45,
+                                                  ),
+                                                  padding: EdgeInsets.zero,
+                                                  onPressed: () {
+                                                    FocusManager
+                                                        .instance
+                                                        .primaryFocus
+                                                        ?.unfocus();
+                                                    setModalState(() {
+                                                      overallNote = "";
+                                                      showOverallNote =
+                                                          false; // Fade back to Button
+                                                    });
+                                                  },
+                                                )
+                                              : IconButton(
+                                                  icon: const Icon(
+                                                    Icons.check_circle,
+                                                    size: 22,
+                                                    color: Colors.green,
+                                                  ),
+                                                  padding: EdgeInsets.zero,
+                                                  onPressed: () {
+                                                    FocusManager
+                                                        .instance
+                                                        .primaryFocus
+                                                        ?.unfocus();
+                                                    setModalState(
+                                                      () => showOverallNote =
+                                                          false,
+                                                    ); // Hides TextField, Shows Label
+                                                  },
+                                                ),
+                                        ),
+                                      ),
+                                    )
+                                  : Container(
+                                      margin: const EdgeInsets.only(
+                                        top: 5,
+                                        bottom: 5,
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 8,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.green.withOpacity(0.1),
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                          color: Colors.green.withOpacity(0.3),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.check_circle,
+                                            color: Colors.green,
+                                            size: 18,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Expanded(
+                                            child: Text(
+                                              "Instructions: $overallNote",
+                                              style: GoogleFonts.poppins(
+                                                fontSize: 13,
+                                                color: Colors.green.shade800,
+                                                fontWeight: FontWeight.w600,
                                               ),
                                             ),
-                                  style: GoogleFonts.poppins(fontSize: 13),
-                                  decoration: InputDecoration(
-                                    hintText: "Overall instructions...",
-                                    prefixIcon: const Icon(
-                                      Icons.comment_outlined,
-                                      size: 18,
-                                      color: Colors.black54,
-                                    ),
-                                    suffixIcon: GestureDetector(
-                                      onTap: () {
-                                        setModalState(() {
-                                          overallNote = "";
-                                          showOverallNote =
-                                              false; // X dabane par text clear aur wapas fade to button
-                                        });
-                                      },
-                                      child: const Icon(
-                                        Icons.close,
-                                        size: 18,
-                                        color: Colors.black45,
+                                          ),
+                                          InkWell(
+                                            onTap: () => setModalState(
+                                              () => showOverallNote = true,
+                                            ),
+                                            child: const Icon(
+                                              Icons.edit,
+                                              size: 18,
+                                              color: Colors.deepPurple,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 15),
+                                          InkWell(
+                                            onTap: () => setModalState(() {
+                                              overallNote = "";
+                                              showOverallNote =
+                                                  false; // Will fade back to normal button
+                                            }),
+                                            child: const Icon(
+                                              Icons.delete,
+                                              size: 18,
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    filled: true,
-                                    fillColor: Colors.black.withOpacity(0.05),
-                                    contentPadding: const EdgeInsets.only(
-                                      left: 15,
-                                      right: 5,
-                                    ),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: BorderSide.none,
-                                    ),
-                                  ),
-                                ),
-                              ),
                             ),
                           ],
                         );
@@ -3629,6 +3937,7 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
   void showVariantsPopup(MenuItem item) {
     // 🌟 BUG 1 FIX: Har baar naya item kholne par purane addons/variants clear kar do
     selectedVariant = null;
+    bool showVariantError = false; // 🌟 YEH LINE ADD KARNI HAI
     selectedAddOns = [];
 
     showModalBottomSheet(
@@ -3687,15 +3996,16 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
                             fontWeight: FontWeight.w800,
                             color: Color(0xFF1A1B2F),
                           ),
-                          children: const [
-                            TextSpan(
-                              text: "(Select 1 option)",
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.redAccent,
+                          children: [
+                            if (showVariantError)
+                              const TextSpan(
+                                text: " (Select 1 option)",
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.redAccent,
+                                ),
                               ),
-                            ),
                           ],
                         ),
                       ),
@@ -3708,9 +4018,10 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
                             bool isSelected = selectedVariant == entry.key;
                             return GestureDetector(
                               onTap: () {
-                                setModalState(
-                                  () => selectedVariant = entry.key,
-                                );
+                                setModalState(() {
+                                  selectedVariant = entry.key;
+                                  showVariantError = false;
+                                });
                                 setState(() {});
                               },
                               child: Container(
@@ -3741,9 +4052,10 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
                                         groupValue: selectedVariant,
                                         activeColor: Colors.deepPurple,
                                         onChanged: (val) {
-                                          setModalState(
-                                            () => selectedVariant = val,
-                                          );
+                                          setModalState(() {
+                                            selectedVariant = val;
+                                            showVariantError = false;
+                                          });
                                           setState(() {});
                                         },
                                       ),
@@ -3901,22 +4213,10 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
                           // 🌟 BUG 2 FIX: Mandatory Variant Validation check
                           if (item.variants.isNotEmpty &&
                               selectedVariant == null) {
-                            // FIX: Premium English text & floating behavior to appear over modal
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  "Please select a variant to proceed",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                behavior: SnackBarBehavior.floating,
-                                margin: EdgeInsets.only(
-                                  bottom: 100,
-                                  left: 20,
-                                  right: 20,
-                                ),
-                                backgroundColor: Colors.redAccent,
-                              ),
-                            );
+                            // FIX: Background snackbar removed, triggering inline error
+                            setModalState(() {
+                              showVariantError = true;
+                            });
                             return; // Yahan se execution rok do
                           }
 
