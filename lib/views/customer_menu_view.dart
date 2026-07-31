@@ -1086,14 +1086,13 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
       await Future.delayed(const Duration(seconds: 5));
       isPlacingOrderLock = false; // Release lock
     } catch (e) {
+      debugPrint("Firestore batch error: $e");
       isPlacingOrderLock = false;
       if (mounted) {
         setState(() => isPlacingOrder = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              "There's an error placing your order, please try again.",
-            ),
+          SnackBar(
+            content: Text("Error: $e"),
             backgroundColor: Colors.redAccent,
           ),
         );
