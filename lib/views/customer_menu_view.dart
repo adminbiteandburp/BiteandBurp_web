@@ -377,7 +377,9 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
         .collection('restaurants')
         .doc(widget.hotelId)
         .collection('tables')
-        .doc(widget.tableId)
+        .doc(
+          widget.tableId.toString().replaceAll('Table ', '').trim(),
+        ) // 🌟 FIX: Cleaned ID format
         .snapshots()
         .listen((snapshot) {
           if (!mounted) return;
@@ -1057,7 +1059,9 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
           .collection('restaurants')
           .doc(widget.hotelId)
           .collection('tables')
-          .doc(widget.tableId);
+          .doc(
+            widget.tableId.toString().replaceAll('Table ', '').trim(),
+          ); // 🌟 FIX: Cleaned ID format
 
       batch.set(orderRef, {
         // 🌟 BUG 4 FIX: POS App format match karne ke liye "Table " word ko clean kar diya
@@ -4077,10 +4081,8 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
                                     ),
                                     Text(
                                       "₹${entry.value}",
-                                      style: TextStyle(
-                                        color: isSelected
-                                            ? Colors.deepPurple
-                                            : Colors.black54,
+                                      style: const TextStyle(
+                                        color: Colors.deepPurple,
                                         fontWeight: FontWeight.w800,
                                         fontSize: 14,
                                       ),
