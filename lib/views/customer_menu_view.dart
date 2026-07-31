@@ -20,6 +20,9 @@ class CustomerMenuView extends StatefulWidget {
   State<CustomerMenuView> createState() => _CustomerMenuViewState();
 }
 
+bool isPlacingOrderLock =
+    false; // Add this variable inside _CustomerMenuViewState
+
 class _CustomerMenuViewState extends State<CustomerMenuView> {
   // 🌟 APP NAVIGATION STATE
   bool isWelcomeScreen = true;
@@ -275,8 +278,9 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
 
           final data = snapshot.data() as Map<String, dynamic>?;
           // Dono fields check karo: POS app wala 'isOccupied' bhi aur string 'status' bhi
-          // FIX: data == null par session wipe nahi hoga. Sirf explicit POS clear par hoga.
+          // FIX: Cooldown/Lock Logic for new customers
           final isTableFree =
+              !isPlacingOrderLock && // Skip wiping if we are actively placing an order
               data != null &&
               (data['isOccupied'] == false || data['status'] == 'Available');
 
@@ -955,13 +959,20 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
 
       // 🌟 INSTANT TABLE LOCK: Web app khud bhi table ko occupied mark karega
       // Taaki refresh karne par race-condition ki wajah se session na ude
+      isPlacingOrderLock = true; // Lock session clear listener
+
       await FirebaseFirestore.instance
           .collection('restaurants')
           .doc(widget.hotelId)
           .collection('tables')
           .doc(widget.tableId)
           .update({'isOccupied': true, 'status': 'Occupied'});
+
+      // Wait for 5 seconds cooldown to allow stream to fully catch up
+      await Future.delayed(const Duration(seconds: 5));
+      isPlacingOrderLock = false; // Release lock
     } catch (e) {
+      isPlacingOrderLock = false;
       debugPrint("Firebase sync issue, continuing locally: $e");
     }
 
@@ -3667,12 +3678,25 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
 
                     // 1. Variants List
                     if (item.variants.isNotEmpty) ...[
-                      const Text(
-                        "Select Variant",
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w800,
-                          color: Color(0xFF1A1B2F),
+                      // FIX: Added inline mandatory text in red
+                      Text.rich(
+                        TextSpan(
+                          text: "Select Variant ",
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w800,
+                            color: Color(0xFF1A1B2F),
+                          ),
+                          children: const [
+                            TextSpan(
+                              text: "(Select 1 option)",
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.redAccent,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -3877,11 +3901,20 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
                           // 🌟 BUG 2 FIX: Mandatory Variant Validation check
                           if (item.variants.isNotEmpty &&
                               selectedVariant == null) {
+                            // FIX: Premium English text & floating behavior to appear over modal
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text(
-                                  "Bhai pehle ek variant toh select karo! 😅",
+                                  "Please select a variant to proceed",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
+                                behavior: SnackBarBehavior.floating,
+                                margin: EdgeInsets.only(
+                                  bottom: 100,
+                                  left: 20,
+                                  right: 20,
+                                ),
+                                backgroundColor: Colors.redAccent,
                               ),
                             );
                             return; // Yahan se execution rok do

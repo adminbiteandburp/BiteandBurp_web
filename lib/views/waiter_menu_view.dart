@@ -337,26 +337,113 @@ class _WaiterMenuViewState extends State<WaiterMenuView> {
               ),
               const Divider(),
               // Render Cart Items
+              // FIX: Replaced barebones cart with Rich Customer Cart UI Parity
               ...cart.entries.map((entry) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                String itemName = entry.key;
+                int qty = entry.value;
+                double price = itemPrices[itemName] ?? 0.0;
+
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "${entry.key}  x${entry.value}",
+                        itemName,
                         style: GoogleFonts.poppins(
-                          fontSize: 14,
                           fontWeight: FontWeight.w600,
+                          fontSize: 15,
+                          color: Colors.black87,
+                          height: 1.3,
                         ),
                       ),
-                      Text(
-                        "₹${((itemPrices[entry.key] ?? 0) * entry.value).toStringAsFixed(0)}",
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          color: Colors.deepPurple,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      const SizedBox(height: 12),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          // Note layout for UI parity
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.edit_note,
+                                size: 18,
+                                color: Colors.grey,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                "Add note",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 13,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              // Quantity Controls (+/-)
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors.deepPurple.withOpacity(0.3),
+                                  ),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Row(
+                                  children: [
+                                    InkWell(
+                                      onTap: () => setState(() {
+                                        if (cart[itemName]! > 1)
+                                          cart[itemName] = cart[itemName]! - 1;
+                                        else
+                                          cart.remove(itemName);
+                                      }),
+                                      child: const Icon(
+                                        Icons.remove,
+                                        size: 18,
+                                        color: Colors.deepPurple,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Text(
+                                      "$qty",
+                                      style: GoogleFonts.poppins(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.deepPurple,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    InkWell(
+                                      onTap: () => setState(
+                                        () => cart[itemName] =
+                                            cart[itemName]! + 1,
+                                      ),
+                                      child: const Icon(
+                                        Icons.add,
+                                        size: 18,
+                                        color: Colors.deepPurple,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Text(
+                                "₹${(price * qty).toStringAsFixed(0)}",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 15,
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ],
                   ),
