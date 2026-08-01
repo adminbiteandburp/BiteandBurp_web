@@ -3,19 +3,23 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:convert';
+import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
+import 'dart:async';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomerMenuView extends StatefulWidget {
   final String hotelId;
   final String tableId;
+  final String? urlKey; // 🌟 FIX: URL key parameter added for strict matching
 
   const CustomerMenuView({
     super.key,
     required this.hotelId,
     required this.tableId,
+    this.urlKey,
   });
 
   @override
@@ -45,6 +49,30 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
   // 🌟 SECURITY VARIABLES
   bool isValidatingKey = true;
   bool isKeyValid = false;
+  String? initialUrlKey;
+  StreamSubscription<DocumentSnapshot>? _tableStatusSubscription;
+
+  @override
+  void dispose() {
+    _tableStatusSubscription?.cancel();
+    super.dispose();
+  }
+
+  // 🌟 FIX: This runs when user manually changes URL parameters without refreshing!
+  @override
+  void didUpdateWidget(CustomerMenuView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.tableId != oldWidget.tableId ||
+        widget.urlKey != oldWidget.urlKey) {
+      _tableStatusSubscription?.cancel();
+      _clearSessionData();
+      setState(() {
+        isValidatingKey = true;
+        isKeyValid = false;
+      });
+      _validateTableKey();
+    }
+  }
 
   @override
   void initState() {
@@ -52,23 +80,14 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
     _validateTableKey(); // 🌟 SECURITY: Check URL tampering
     _loadSessionData(); // 💾 Restore session on startup
     _fetchLiveMenu(); // 🌟 Bridge Connect: Live data fetch start
-    _listenToTableStatus(); // 🌟 FIX: Start listening to the table's live status
   }
 
   // 🌟 SECURITY: Anti-Tamper Key Verification
   Future<void> _validateTableKey() async {
     try {
-      // 🌟 FIX 1: Manually parse Hash URL to extract Key securely
-      String fullUrl = Uri.base.toString();
-      String? urlKey;
-
-      if (fullUrl.contains('?key=')) {
-        urlKey = fullUrl
-            .split('?key=')
-            .last
-            .split('&')
-            .first; // Extract key directly from string
-      }
+      // 🌟 FIX: Directly use strictly passed key from GoRouter
+      String? urlKey = widget.urlKey;
+      initialUrlKey = urlKey; // 🌟 Store for real-time monitoring
 
       if (urlKey == null || urlKey.isEmpty) {
         if (mounted)
@@ -104,6 +123,7 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
             isKeyValid = true;
             isValidatingKey = false;
           });
+        _listenToTableStatus(); // 🌟 FIX: Start listening NOW when ID is known
       } else {
         if (mounted)
           setState(() {
@@ -458,39 +478,44 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
 
   // 🌟 REAL-TIME TABLE STATUS LISTENER
   void _listenToTableStatus() {
-    FirebaseFirestore.instance
+    if (realFirebaseTableId.isEmpty) return;
+
+    _tableStatusSubscription = FirebaseFirestore.instance
         .collection('restaurants')
         .doc(widget.hotelId)
         .collection('tables')
-        .doc(
-          widget.tableId.toString().replaceAll('Table ', '').trim(),
-        ) // 🌟 FIX: Cleaned ID format
+        .doc(realFirebaseTableId) // 🌟 FIX: Use Exact DB Document ID
         .snapshots()
         .listen((snapshot) {
           if (!mounted) return;
 
           final data = snapshot.data() as Map<String, dynamic>?;
+          if (data == null) return;
+
+          final currentKey = data['key'];
+          final hasKeyChanged =
+              initialUrlKey != null && currentKey != initialUrlKey;
+
           // Dono fields check karo: POS app wala 'isOccupied' bhi aur string 'status' bhi
           // FIX: Cooldown/Lock Logic for new customers
           final isTableFree =
               !isPlacingOrderLock && // Skip wiping if we are actively placing an order
-              data != null &&
               (data['isOccupied'] == false || data['status'] == 'Available');
 
-          if (isTableFree) {
-            // Sirf tabhi wipe karo jab order actually place ho chuka ho (yani session actually khatam hua ho)
-            // Taki sirf cart banate waqt refresh karne se data na ude!
-            if (placedOrders.isNotEmpty) {
-              _clearSessionData();
+          if (isTableFree || hasKeyChanged) {
+            _clearSessionData();
+            setState(() {
+              isKeyValid =
+                  false; // Sends user to "Access Denied / Session Ended" screen
+            });
 
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text("Table session closed. Thank you for dining!"),
-                  backgroundColor: Colors.blueAccent,
-                  behavior: SnackBarBehavior.floating,
-                ),
-              );
-            }
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("Session ended. Thank you for dining!"),
+                backgroundColor: Colors.blueAccent,
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
           }
         });
   }
@@ -4635,4 +4660,69 @@ class MenuItem {
     this.variants = const {},
     this.addOns = const {},
   });
+}
+
+// 🌟 PREMIUM LOADING SCREEN FOR CHECKOUT
+Widget _buildPremiumLoadingOverlay() {
+  return Positioned.fill(
+    child: TweenAnimationBuilder(
+      tween: Tween<double>(begin: 0.0, end: 1.0),
+      duration: const Duration(milliseconds: 300),
+      builder: (context, val, child) {
+        return Opacity(
+          opacity: val,
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+            child: Container(
+              color: Colors.black.withOpacity(0.6),
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Food Cart Animation (Using standard CircularProgress for safety, wrapped beautifully)
+                    Container(
+                      padding: const EdgeInsets.all(25),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.deepPurple.withOpacity(0.4),
+                            blurRadius: 20,
+                            spreadRadius: 5,
+                          ),
+                        ],
+                      ),
+                      child: const CircularProgressIndicator(
+                        color: Colors.deepPurple,
+                        strokeWidth: 4,
+                      ),
+                    ),
+                    const SizedBox(height: 25),
+                    Text(
+                      "Packing your order...",
+                      style: GoogleFonts.cormorantGaramond(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      "Sending to kitchen seamlessly",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.white70,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    ),
+  );
 }

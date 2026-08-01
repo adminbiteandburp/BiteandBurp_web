@@ -43,7 +43,13 @@ class BiteAndBurpWebApp extends StatelessWidget {
           builder: (context, state) {
             final hotelId = state.pathParameters['hotelId'] ?? '';
             final tableId = state.pathParameters['tableId'] ?? 'Unknown';
-            return CustomerMenuView(hotelId: hotelId, tableId: tableId);
+            // 🌟 FIX: Safely extract 'key' from URL and pass it forward
+            final key = state.uri.queryParameters['key'];
+            return CustomerMenuView(
+              hotelId: hotelId,
+              tableId: tableId,
+              urlKey: key,
+            );
           },
         ),
         GoRoute(

@@ -2214,14 +2214,14 @@ class _WaiterMenuViewState extends State<WaiterMenuView> {
                   )
                   .length,
               itemBuilder: (context, index) {
-                var filteredMenu = liveMenu
+                // 🌟 FIX: Removed .toList() to stop massive memory leaks on every scroll!
+                var data = liveMenu
                     .where(
                       (item) =>
                           selectedCategory == "All" ||
                           item['category'] == selectedCategory,
                     )
-                    .toList();
-                var data = filteredMenu[index];
+                    .elementAt(index);
 
                 String name = data['name'] ?? 'Unknown';
                 double price = (data['price'] ?? 0).toDouble();
