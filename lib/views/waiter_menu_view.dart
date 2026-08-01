@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/material.dart';
+// Upar diye gaye existing imports ke sath yeh line add kar do:
+import 'package:flutter/foundation.dart';
 
 class WaiterMenuView extends StatefulWidget {
   final String hotelId;
@@ -177,8 +180,11 @@ class _WaiterMenuViewState extends State<WaiterMenuView> {
               ],
             },
           ];
-          fetchedItems.addAll(mockItems);
-          catSet.add("Testing");
+
+          if (kDebugMode) {
+            fetchedItems.addAll(mockItems);
+            catSet.add("Testing");
+          }
 
           // 🌟 UPDATE UI STATE
           setState(() {
@@ -580,598 +586,689 @@ class _WaiterMenuViewState extends State<WaiterMenuView> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Verify Order",
-                    style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
+                  // 🌟 NAYA FIX: Header row with Verify Order and Clear Button
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Verify Order",
+                        style: GoogleFonts.poppins(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          setModalState(() {
+                            cart.clear();
+                            itemPrices.clear();
+                            itemNotes.clear();
+                            showNoteField.clear();
+                            overallNote = "";
+                            showOverallNote = false;
+                          });
+                          setState(() {});
+                        },
+                        borderRadius: BorderRadius.circular(20),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.redAccent.withOpacity(0.3),
+                            ),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.delete_outline_rounded,
+                                color: Colors.redAccent,
+                                size: 16,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                "Clear",
+                                style: GoogleFonts.poppins(
+                                  color: Colors.redAccent,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   const Divider(),
-                  // Render Cart Items
-                  // FIX: Replaced barebones cart with Rich Customer Cart UI Parity
-                  ...cart.entries.map((entry) {
-                    String itemName = entry.key;
-                    int qty = entry.value;
-                    double price = itemPrices[itemName] ?? 0.0;
 
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 24),
+                  // 🌟 FIX: Scrollable Area Start
+                  Flexible(
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(
-                            itemName,
-                            style: GoogleFonts.poppins(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 15,
-                              color: Colors.black87,
-                              height: 1.3,
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              // 🌟 FIX: Fully Interactive "Add note" Button from Customer UI
-                              (!showNoteField.containsKey(itemName) ||
-                                          !showNoteField[itemName]!) &&
-                                      (itemNotes[itemName] ?? "").isEmpty
-                                  ? InkWell(
-                                      // 🌟 FIXED: Changed setState to setModalState for real-time Cart update
-                                      onTap: () => setModalState(
-                                        () => showNoteField[itemName] = true,
+                          // Render Cart Items
+                          // FIX: Replaced barebones cart with Rich Customer Cart UI Parity
+                          ...cart.entries.map((entry) {
+                            String itemName = entry.key;
+                            int qty = entry.value;
+                            double price = itemPrices[itemName] ?? 0.0;
+
+                            return Container(
+                              margin: const EdgeInsets.only(bottom: 24),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    itemName,
+                                    style: GoogleFonts.poppins(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15,
+                                      color: Colors.black87,
+                                      height: 1.3,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      // 🌟 FIX: Fully Interactive "Add note" Button from Customer UI
+                                      (!showNoteField.containsKey(itemName) ||
+                                                  !showNoteField[itemName]!) &&
+                                              (itemNotes[itemName] ?? "")
+                                                  .isEmpty
+                                          ? InkWell(
+                                              // 🌟 FIXED: Changed setState to setModalState for real-time Cart update
+                                              onTap: () => setModalState(
+                                                () => showNoteField[itemName] =
+                                                    true,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(4),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      vertical: 4,
+                                                      horizontal: 2,
+                                                    ),
+                                                child: Row(
+                                                  children: [
+                                                    const Icon(
+                                                      Icons.edit_note,
+                                                      size: 18,
+                                                      color: Colors.grey,
+                                                    ),
+                                                    const SizedBox(width: 4),
+                                                    Text(
+                                                      "Add note",
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                            fontSize: 13,
+                                                            color: Colors.grey,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            )
+                                          : const SizedBox.shrink(),
+                                      Row(
+                                        children: [
+                                          // Quantity Controls (+/-)
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 8,
+                                              vertical: 4,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                color: Colors.deepPurple
+                                                    .withOpacity(0.3),
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                InkWell(
+                                                  // 🌟 FIXED: Added setModalState for real-time quantity update inside the cart
+                                                  onTap: () {
+                                                    _updateCart(
+                                                      itemName,
+                                                      price,
+                                                      -1,
+                                                    );
+                                                    setModalState(() {});
+                                                  },
+                                                  child: const Icon(
+                                                    Icons.remove,
+                                                    size: 18,
+                                                    color: Colors.deepPurple,
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 12),
+                                                Text(
+                                                  "$qty",
+                                                  style: GoogleFonts.poppins(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.deepPurple,
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 12),
+                                                InkWell(
+                                                  // 🌟 FIXED: Added setModalState for real-time quantity update inside the cart
+                                                  onTap: () {
+                                                    _updateCart(
+                                                      itemName,
+                                                      price,
+                                                      1,
+                                                    );
+                                                    setModalState(() {});
+                                                  },
+                                                  child: const Icon(
+                                                    Icons.add,
+                                                    size: 18,
+                                                    color: Colors.deepPurple,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          const SizedBox(width: 16),
+                                          Text(
+                                            "₹${(price * qty).toStringAsFixed(0)}",
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 15,
+                                              color: Colors.black87,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      borderRadius: BorderRadius.circular(4),
-                                      child: Padding(
+                                    ],
+                                  ),
+                                  // 🌟 FIX: Item Note - Dynamic TextField to Saved Label Switch
+                                  if ((showNoteField[itemName] ?? false) ||
+                                      (itemNotes[itemName] ?? "").isNotEmpty)
+                                    (showNoteField[itemName] ?? false)
+                                        ? Padding(
+                                            padding: const EdgeInsets.only(
+                                              top: 10,
+                                            ),
+                                            child: SizedBox(
+                                              height: 40,
+                                              child: TextField(
+                                                autofocus:
+                                                    (itemNotes[itemName] ?? "")
+                                                        .isEmpty,
+                                                onChanged: (val) =>
+                                                    setModalState(
+                                                      () =>
+                                                          itemNotes[itemName] =
+                                                              val,
+                                                    ),
+                                                onSubmitted: (val) {
+                                                  if (val.trim().isNotEmpty)
+                                                    setModalState(
+                                                      () =>
+                                                          showNoteField[itemName] =
+                                                              false,
+                                                    );
+                                                },
+                                                controller:
+                                                    TextEditingController(
+                                                        text:
+                                                            itemNotes[itemName],
+                                                      )
+                                                      ..selection =
+                                                          TextSelection.fromPosition(
+                                                            TextPosition(
+                                                              offset:
+                                                                  (itemNotes[itemName] ??
+                                                                          "")
+                                                                      .length,
+                                                            ),
+                                                          ),
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 13,
+                                                ),
+                                                decoration: InputDecoration(
+                                                  hintText:
+                                                      "E.g. Less spicy...",
+                                                  filled: true,
+                                                  fillColor: Colors.black
+                                                      .withOpacity(0.05),
+                                                  border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          10,
+                                                        ),
+                                                    borderSide: BorderSide.none,
+                                                  ),
+                                                  suffixIcon: Row(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      IconButton(
+                                                        icon: const Icon(
+                                                          Icons
+                                                              .add_circle_outline,
+                                                          size: 20,
+                                                          color:
+                                                              Colors.deepPurple,
+                                                        ),
+                                                        onPressed: () =>
+                                                            _showQuickNotesPopup(
+                                                              context,
+                                                              setModalState,
+                                                              itemName,
+                                                            ),
+                                                      ),
+                                                      (itemNotes[itemName] ??
+                                                                  "")
+                                                              .trim()
+                                                              .isEmpty
+                                                          ? IconButton(
+                                                              icon: const Icon(
+                                                                Icons.close,
+                                                                size: 18,
+                                                                color: Colors
+                                                                    .black45,
+                                                              ),
+                                                              onPressed: () {
+                                                                FocusManager
+                                                                    .instance
+                                                                    .primaryFocus
+                                                                    ?.unfocus();
+                                                                setModalState(() {
+                                                                  itemNotes[itemName] =
+                                                                      "";
+                                                                  showNoteField[itemName] =
+                                                                      false;
+                                                                });
+                                                              },
+                                                            )
+                                                          : IconButton(
+                                                              icon: const Icon(
+                                                                Icons
+                                                                    .check_circle,
+                                                                size: 22,
+                                                                color: Colors
+                                                                    .green,
+                                                              ),
+                                                              onPressed: () {
+                                                                FocusManager
+                                                                    .instance
+                                                                    .primaryFocus
+                                                                    ?.unfocus();
+                                                                setModalState(
+                                                                  () =>
+                                                                      showNoteField[itemName] =
+                                                                          false,
+                                                                ); // 🌟 Hides TextField, Shows Label
+                                                              },
+                                                            ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        : Container(
+                                            margin: const EdgeInsets.only(
+                                              top: 10,
+                                            ),
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 12,
+                                              vertical: 8,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: Colors.green.withOpacity(
+                                                0.1,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              border: Border.all(
+                                                color: Colors.green.withOpacity(
+                                                  0.3,
+                                                ),
+                                              ),
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                const Icon(
+                                                  Icons.check_circle,
+                                                  color: Colors.green,
+                                                  size: 16,
+                                                ),
+                                                const SizedBox(width: 8),
+                                                Expanded(
+                                                  child: Text(
+                                                    "${itemNotes[itemName]}",
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 12,
+                                                      color:
+                                                          Colors.green.shade800,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                    ),
+                                                  ),
+                                                ),
+                                                InkWell(
+                                                  onTap: () => setModalState(
+                                                    () =>
+                                                        showNoteField[itemName] =
+                                                            true,
+                                                  ),
+                                                  child: const Icon(
+                                                    Icons.edit,
+                                                    size: 16,
+                                                    color: Colors.deepPurple,
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 12),
+                                                InkWell(
+                                                  onTap: () => setModalState(
+                                                    () {
+                                                      itemNotes[itemName] = "";
+                                                      showNoteField[itemName] =
+                                                          false;
+                                                    },
+                                                  ),
+                                                  child: const Icon(
+                                                    Icons.delete,
+                                                    size: 16,
+                                                    color: Colors.red,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                ],
+                              ),
+                            );
+                          }),
+                          const Divider(),
+
+                          // 🌟 NAYA FEATURE: Smart Cross-Sell Belt & Compact Note Button
+                          Builder(
+                            builder: (ctx) {
+                              // Filter items strictly between Rs 10 to 50
+                              final crossSellItems = liveMenu.where((item) {
+                                double p =
+                                    double.tryParse(item['price'].toString()) ??
+                                    0.0;
+                                return p >= 10 && p <= 50;
+                              }).toList();
+
+                              return Row(
+                                children: [
+                                  // 🌟 FIX: Instructions Button matching Customer Cart
+                                  if (!showOverallNote)
+                                    InkWell(
+                                      onTap: () => setModalState(
+                                        () => showOverallNote = true,
+                                      ),
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: Container(
                                         padding: const EdgeInsets.symmetric(
-                                          vertical: 4,
-                                          horizontal: 2,
+                                          horizontal: 12,
+                                          vertical: 8,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: overallNote.isNotEmpty
+                                              ? Colors.green.shade50
+                                              : Colors.deepPurple.withOpacity(
+                                                  0.05,
+                                                ),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                          border: Border.all(
+                                            color: overallNote.isNotEmpty
+                                                ? Colors.green.withOpacity(0.4)
+                                                : Colors.deepPurple.withOpacity(
+                                                    0.2,
+                                                  ),
+                                          ),
                                         ),
                                         child: Row(
+                                          mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            const Icon(
-                                              Icons.edit_note,
-                                              size: 18,
-                                              color: Colors.grey,
+                                            Icon(
+                                              overallNote.isNotEmpty
+                                                  ? Icons.check_circle
+                                                  : Icons.edit_note,
+                                              size: 16,
+                                              color: overallNote.isNotEmpty
+                                                  ? Colors.green
+                                                  : Colors.deepPurple.shade700,
                                             ),
                                             const SizedBox(width: 4),
                                             Text(
-                                              "Add note",
+                                              overallNote.isNotEmpty
+                                                  ? "Instructions ✓"
+                                                  : "Instructions",
                                               style: GoogleFonts.poppins(
-                                                fontSize: 13,
-                                                color: Colors.grey,
-                                                fontWeight: FontWeight.w500,
+                                                color: overallNote.isNotEmpty
+                                                    ? Colors.green.shade800
+                                                    : Colors
+                                                          .deepPurple
+                                                          .shade700,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 12,
                                               ),
                                             ),
                                           ],
                                         ),
                                       ),
-                                    )
-                                  : const SizedBox.shrink(),
-                              Row(
-                                children: [
-                                  // Quantity Controls (+/-)
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                      vertical: 4,
                                     ),
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: Colors.deepPurple.withOpacity(
-                                          0.3,
-                                        ),
-                                      ),
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        InkWell(
-                                          // 🌟 FIXED: Added setModalState for real-time quantity update inside the cart
-                                          onTap: () {
-                                            _updateCart(itemName, price, -1);
-                                            setModalState(() {});
-                                          },
-                                          child: const Icon(
-                                            Icons.remove,
-                                            size: 18,
-                                            color: Colors.deepPurple,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 12),
-                                        Text(
-                                          "$qty",
-                                          style: GoogleFonts.poppins(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.deepPurple,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 12),
-                                        InkWell(
-                                          // 🌟 FIXED: Added setModalState for real-time quantity update inside the cart
-                                          onTap: () {
-                                            _updateCart(itemName, price, 1);
-                                            setModalState(() {});
-                                          },
-                                          child: const Icon(
-                                            Icons.add,
-                                            size: 18,
-                                            color: Colors.deepPurple,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(width: 16),
-                                  Text(
-                                    "₹${(price * qty).toStringAsFixed(0)}",
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 15,
-                                      color: Colors.black87,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          // 🌟 FIX: Item Note - Dynamic TextField to Saved Label Switch
-                          if ((showNoteField[itemName] ?? false) ||
-                              (itemNotes[itemName] ?? "").isNotEmpty)
-                            (showNoteField[itemName] ?? false)
-                                ? Padding(
-                                    padding: const EdgeInsets.only(top: 10),
-                                    child: SizedBox(
-                                      height: 40,
-                                      child: TextField(
-                                        autofocus:
-                                            (itemNotes[itemName] ?? "").isEmpty,
-                                        onChanged: (val) => setModalState(
-                                          () => itemNotes[itemName] = val,
-                                        ),
-                                        onSubmitted: (val) {
-                                          if (val.trim().isNotEmpty)
-                                            setModalState(
-                                              () => showNoteField[itemName] =
-                                                  false,
-                                            );
-                                        },
-                                        controller:
-                                            TextEditingController(
-                                                text: itemNotes[itemName],
-                                              )
-                                              ..selection =
-                                                  TextSelection.fromPosition(
-                                                    TextPosition(
-                                                      offset:
-                                                          (itemNotes[itemName] ??
-                                                                  "")
-                                                              .length,
+
+                                  if (!showOverallNote &&
+                                      crossSellItems.isNotEmpty)
+                                    const SizedBox(width: 12),
+
+                                  // Horizontal Quick-Add Belt for Cross Sell
+                                  if (!showOverallNote &&
+                                      crossSellItems.isNotEmpty)
+                                    Expanded(
+                                      child: SizedBox(
+                                        height: 35,
+                                        child: ListView.builder(
+                                          scrollDirection: Axis.horizontal,
+                                          physics:
+                                              const BouncingScrollPhysics(),
+                                          itemCount: crossSellItems.length,
+                                          itemBuilder: (context, index) {
+                                            final crossItem =
+                                                crossSellItems[index];
+                                            double itemPrice =
+                                                double.tryParse(
+                                                  crossItem['price'].toString(),
+                                                ) ??
+                                                0.0;
+                                            String itemName =
+                                                crossItem['name'] ?? "Item";
+
+                                            return Padding(
+                                              padding: const EdgeInsets.only(
+                                                right: 8,
+                                              ),
+                                              child: InkWell(
+                                                onTap: () {
+                                                  _updateCart(
+                                                    itemName,
+                                                    itemPrice,
+                                                    1,
+                                                  );
+                                                  setModalState(() {});
+                                                },
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                                child: Container(
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 14,
+                                                      ),
+                                                  alignment: Alignment.center,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          20,
+                                                        ),
+                                                    border: Border.all(
+                                                      color:
+                                                          Colors.grey.shade300,
                                                     ),
                                                   ),
-                                        style: GoogleFonts.poppins(
-                                          fontSize: 13,
-                                        ),
-                                        decoration: InputDecoration(
-                                          hintText: "E.g. Less spicy...",
-                                          filled: true,
-                                          fillColor: Colors.black.withOpacity(
-                                            0.05,
-                                          ),
-                                          border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              10,
-                                            ),
-                                            borderSide: BorderSide.none,
-                                          ),
-                                          suffixIcon: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              IconButton(
-                                                icon: const Icon(
-                                                  Icons.add_circle_outline,
-                                                  size: 20,
-                                                  color: Colors.deepPurple,
+                                                  child: Row(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      Text(
+                                                        "$itemName • ₹${itemPrice.toStringAsFixed(0)}",
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                              fontSize: 12,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              color: Colors
+                                                                  .black87,
+                                                            ),
+                                                      ),
+                                                      const SizedBox(width: 6),
+                                                      const Icon(
+                                                        Icons.add_circle,
+                                                        size: 14,
+                                                        color:
+                                                            Colors.deepPurple,
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
-                                                onPressed: () =>
-                                                    _showQuickNotesPopup(
-                                                      context,
-                                                      setModalState,
-                                                      itemName,
-                                                    ),
                                               ),
-                                              (itemNotes[itemName] ?? "")
-                                                      .trim()
-                                                      .isEmpty
-                                                  ? IconButton(
-                                                      icon: const Icon(
-                                                        Icons.close,
-                                                        size: 18,
-                                                        color: Colors.black45,
-                                                      ),
-                                                      onPressed: () {
-                                                        FocusManager
-                                                            .instance
-                                                            .primaryFocus
-                                                            ?.unfocus();
-                                                        setModalState(() {
-                                                          itemNotes[itemName] =
-                                                              "";
-                                                          showNoteField[itemName] =
-                                                              false;
-                                                        });
-                                                      },
-                                                    )
-                                                  : IconButton(
-                                                      icon: const Icon(
-                                                        Icons.check_circle,
-                                                        size: 22,
-                                                        color: Colors.green,
-                                                      ),
-                                                      onPressed: () {
-                                                        FocusManager
-                                                            .instance
-                                                            .primaryFocus
-                                                            ?.unfocus();
-                                                        setModalState(
-                                                          () =>
-                                                              showNoteField[itemName] =
-                                                                  false,
-                                                        ); // 🌟 Hides TextField, Shows Label
-                                                      },
-                                                    ),
-                                            ],
-                                          ),
+                                            );
+                                          },
                                         ),
                                       ),
                                     ),
-                                  )
-                                : Container(
-                                    margin: const EdgeInsets.only(top: 10),
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 8,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.green.withOpacity(0.1),
-                                      borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(
-                                        color: Colors.green.withOpacity(0.3),
-                                      ),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.check_circle,
-                                          color: Colors.green,
-                                          size: 16,
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Expanded(
-                                          child: Text(
-                                            "${itemNotes[itemName]}",
-                                            style: GoogleFonts.poppins(
-                                              fontSize: 12,
-                                              color: Colors.green.shade800,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        ),
-                                        InkWell(
-                                          onTap: () => setModalState(
-                                            () =>
-                                                showNoteField[itemName] = true,
-                                          ),
-                                          child: const Icon(
-                                            Icons.edit,
-                                            size: 16,
-                                            color: Colors.deepPurple,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 12),
-                                        InkWell(
-                                          onTap: () => setModalState(() {
-                                            itemNotes[itemName] = "";
-                                            showNoteField[itemName] = false;
-                                          }),
-                                          child: const Icon(
-                                            Icons.delete,
-                                            size: 16,
-                                            color: Colors.red,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                        ],
-                      ),
-                    );
-                  }),
-                  const Divider(),
+                                ],
+                              );
+                            },
+                          ),
 
-                  // 🌟 NAYA FEATURE: Smart Cross-Sell Belt & Compact Note Button
-                  Builder(
-                    builder: (ctx) {
-                      // Filter items strictly between Rs 10 to 50
-                      final crossSellItems = liveMenu.where((item) {
-                        double p =
-                            double.tryParse(item['price'].toString()) ?? 0.0;
-                        return p >= 10 && p <= 50;
-                      }).toList();
-
-                      return Row(
-                        children: [
-                          // 🌟 FIX: Instructions Button matching Customer Cart
-                          if (!showOverallNote && overallNote.isEmpty)
-                            InkWell(
-                              onTap: () =>
-                                  setModalState(() => showOverallNote = true),
-                              borderRadius: BorderRadius.circular(8),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 8,
+                          // 🌟 FIX: Overall Note - Dynamic TextField to Saved Label Switch
+                          if (showOverallNote)
+                            TextField(
+                              autofocus: overallNote.isEmpty,
+                              onChanged: (val) =>
+                                  setModalState(() => overallNote = val),
+                              onSubmitted: (val) {
+                                if (val.trim().isNotEmpty) {
+                                  setModalState(() => showOverallNote = false);
+                                }
+                              },
+                              controller:
+                                  TextEditingController(text: overallNote)
+                                    ..selection = TextSelection.fromPosition(
+                                      TextPosition(offset: overallNote.length),
+                                    ),
+                              style: GoogleFonts.poppins(fontSize: 13),
+                              decoration: InputDecoration(
+                                hintText: "Overall cooking instructions...",
+                                filled: true,
+                                fillColor: Colors.black.withOpacity(0.05),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide.none,
                                 ),
-                                decoration: BoxDecoration(
-                                  color: Colors.deepPurple.withOpacity(0.05),
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(
-                                    color: Colors.deepPurple.withOpacity(0.2),
-                                  ),
-                                ),
-                                child: Row(
+                                suffixIcon: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Icon(
-                                      Icons.edit_note,
-                                      size: 16,
-                                      color: Colors.deepPurple.shade700,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      "Instructions",
-                                      style: GoogleFonts.poppins(
-                                        color: Colors.deepPurple.shade700,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 12,
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.add_circle_outline,
+                                        size: 20,
+                                        color: Colors.deepPurple,
+                                      ),
+                                      onPressed: () => _showQuickNotesPopup(
+                                        context,
+                                        setModalState,
+                                        "overall",
                                       ),
                                     ),
+                                    overallNote.trim().isEmpty
+                                        ? IconButton(
+                                            icon: const Icon(
+                                              Icons.close,
+                                              size: 18,
+                                              color: Colors.black45,
+                                            ),
+                                            onPressed: () {
+                                              FocusManager.instance.primaryFocus
+                                                  ?.unfocus();
+                                              setModalState(() {
+                                                overallNote = "";
+                                                showOverallNote = false;
+                                              });
+                                            },
+                                          )
+                                        : IconButton(
+                                            icon: const Icon(
+                                              Icons.check_circle,
+                                              size: 22,
+                                              color: Colors.green,
+                                            ),
+                                            onPressed: () {
+                                              FocusManager.instance.primaryFocus
+                                                  ?.unfocus();
+                                              setModalState(
+                                                () => showOverallNote = false,
+                                              );
+                                            },
+                                          ),
                                   ],
                                 ),
                               ),
                             ),
-
-                          if (!showOverallNote &&
-                              overallNote.isEmpty &&
-                              crossSellItems.isNotEmpty)
-                            const SizedBox(width: 12),
-
-                          // Horizontal Quick-Add Belt for Cross Sell
-                          if (!showOverallNote &&
-                              overallNote.isEmpty &&
-                              crossSellItems.isNotEmpty)
-                            Expanded(
-                              child: SizedBox(
-                                height: 35,
-                                child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  physics: const BouncingScrollPhysics(),
-                                  itemCount: crossSellItems.length,
-                                  itemBuilder: (context, index) {
-                                    final crossItem = crossSellItems[index];
-                                    double itemPrice =
-                                        double.tryParse(
-                                          crossItem['price'].toString(),
-                                        ) ??
-                                        0.0;
-                                    String itemName =
-                                        crossItem['name'] ?? "Item";
-
-                                    return Padding(
-                                      padding: const EdgeInsets.only(right: 8),
-                                      child: InkWell(
-                                        onTap: () {
-                                          _updateCart(itemName, itemPrice, 1);
-                                          setModalState(() {});
-                                        },
-                                        borderRadius: BorderRadius.circular(20),
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 14,
-                                          ),
-                                          alignment: Alignment.center,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.circular(
-                                              20,
-                                            ),
-                                            border: Border.all(
-                                              color: Colors.grey.shade300,
-                                            ),
-                                          ),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Text(
-                                                "$itemName • ₹${itemPrice.toStringAsFixed(0)}",
-                                                style: GoogleFonts.poppins(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Colors.black87,
-                                                ),
-                                              ),
-                                              const SizedBox(width: 6),
-                                              const Icon(
-                                                Icons.add_circle,
-                                                size: 14,
-                                                color: Colors.deepPurple,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ),
-                        ],
-                      );
-                    },
+                        ], // 🌟 FIX: Scrollable Column Close
+                      ),
+                    ),
                   ),
-
-                  // 🌟 FIX: Overall Note - Dynamic TextField to Saved Label Switch
-                  if (showOverallNote || overallNote.isNotEmpty)
-                    showOverallNote
-                        ? TextField(
-                            autofocus: overallNote.isEmpty,
-                            onChanged: (val) =>
-                                setModalState(() => overallNote = val),
-                            onSubmitted: (val) {
-                              if (val.trim().isNotEmpty)
-                                setModalState(() => showOverallNote = false);
-                            },
-                            controller: TextEditingController(text: overallNote)
-                              ..selection = TextSelection.fromPosition(
-                                TextPosition(offset: overallNote.length),
-                              ),
-                            style: GoogleFonts.poppins(fontSize: 13),
-                            decoration: InputDecoration(
-                              hintText: "Overall cooking instructions...",
-                              filled: true,
-                              fillColor: Colors.black.withOpacity(0.05),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide.none,
-                              ),
-                              suffixIcon: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  IconButton(
-                                    icon: const Icon(
-                                      Icons.add_circle_outline,
-                                      size: 20,
-                                      color: Colors.deepPurple,
-                                    ),
-                                    onPressed: () => _showQuickNotesPopup(
-                                      context,
-                                      setModalState,
-                                      "overall",
-                                    ),
-                                  ),
-                                  overallNote.trim().isEmpty
-                                      ? IconButton(
-                                          icon: const Icon(
-                                            Icons.close,
-                                            size: 18,
-                                            color: Colors.black45,
-                                          ),
-                                          onPressed: () {
-                                            FocusManager.instance.primaryFocus
-                                                ?.unfocus();
-                                            setModalState(() {
-                                              overallNote = "";
-                                              showOverallNote = false;
-                                            });
-                                          },
-                                        )
-                                      : IconButton(
-                                          icon: const Icon(
-                                            Icons.check_circle,
-                                            size: 22,
-                                            color: Colors.green,
-                                          ),
-                                          onPressed: () {
-                                            FocusManager.instance.primaryFocus
-                                                ?.unfocus();
-                                            setModalState(
-                                              () => showOverallNote = false,
-                                            ); // 🌟 Hides TextField, Shows Label
-                                          },
-                                        ),
-                                ],
-                              ),
-                            ),
-                          )
-                        : Container(
-                            margin: const EdgeInsets.only(bottom: 10),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 10,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.green.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                color: Colors.green.withOpacity(0.3),
-                              ),
-                            ),
-                            child: Row(
-                              children: [
-                                const Icon(
-                                  Icons.check_circle,
-                                  color: Colors.green,
-                                  size: 18,
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(
-                                    "Instructions: $overallNote",
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 13,
-                                      color: Colors.green.shade800,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
-                                InkWell(
-                                  onTap: () => setModalState(
-                                    () => showOverallNote = true,
-                                  ),
-                                  child: const Icon(
-                                    Icons.edit,
-                                    size: 18,
-                                    color: Colors.deepPurple,
-                                  ),
-                                ),
-                                const SizedBox(width: 15),
-                                InkWell(
-                                  onTap: () => setModalState(() {
-                                    overallNote = "";
-                                    showOverallNote = false;
-                                  }),
-                                  child: const Icon(
-                                    Icons.delete,
-                                    size: 18,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
 
                   const SizedBox(height: 15),
                   SizedBox(
                     width: double.infinity,
-                    height:
-                        55, // 🌟 FIX: Increased height for a thicker, premium button
+                    height: 55,
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.pop(context); // Close cart sheet
                         _showKOTTableConfirmDialog(); // 🌟 Open table popup before firing KOT
                       },
                       style: ElevatedButton.styleFrom(
-                        // FIX: Changed button color to Deep Purple for UI Parity
                         backgroundColor: Colors.deepPurple,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),
                       ),
                       child: Text(
-                        "Confirm & Select Table",
+                        "Confirm & Select",
                         style: GoogleFonts.poppins(
                           color: Colors.white,
                           fontSize: 16,
@@ -1497,7 +1594,8 @@ class _WaiterMenuViewState extends State<WaiterMenuView> {
                           String uniqueCartKey = itemName;
 
                           if (selectedVariant != null) {
-                            finalPrice += variantsMap[selectedVariant] ?? 0.0;
+                            finalPrice =
+                                variantsMap[selectedVariant] ?? basePrice;
                             uniqueCartKey += " - $selectedVariant";
                           }
                           if (selectedAddOns.isNotEmpty) {
@@ -1528,6 +1626,202 @@ class _WaiterMenuViewState extends State<WaiterMenuView> {
               ),
             );
           },
+        );
+      },
+    );
+  }
+
+  void _showKOTHistoryDialog() {
+    DateTime twentyFourHoursAgo = DateTime.now().subtract(
+      const Duration(hours: 24),
+    );
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          insetPadding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 24,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 550, maxHeight: 600),
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // 🌟 NAYA FIX: Text ko Expanded mein wrap kiya aur ellipsis lagaya taaki overflow na ho
+                    Expanded(
+                      child: Text(
+                        'KOT History (Last 24 Hrs)',
+                        style: GoogleFonts.poppins(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close, color: Colors.black54),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+                const Divider(height: 20, thickness: 1),
+                Flexible(
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('restaurants')
+                        .doc(widget.hotelId)
+                        .collection('live_orders')
+                        .where(
+                          'time',
+                          isGreaterThanOrEqualTo: Timestamp.fromDate(
+                            twentyFourHoursAgo,
+                          ),
+                        )
+                        .orderBy('time', descending: true)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                        return Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Text(
+                              'No orders in the last 24 hours.',
+                              style: GoogleFonts.poppins(
+                                color: Colors.grey,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (context, index) {
+                          var orderData =
+                              snapshot.data!.docs[index].data()
+                                  as Map<String, dynamic>;
+                          return Card(
+                            elevation: 0,
+                            color: Colors.deepPurple.shade50.withOpacity(0.3),
+                            margin: const EdgeInsets.symmetric(vertical: 6),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              side: BorderSide(
+                                color: Colors.deepPurple.withOpacity(0.1),
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(
+                                      Icons.table_restaurant,
+                                      color: Colors.deepPurple,
+                                      size: 22,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 15),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Table ${orderData['tableNumber'] ?? 'N/A'}',
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.deepPurple.shade900,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 6),
+                                        Row(
+                                          children: [
+                                            const Icon(
+                                              Icons.access_time,
+                                              size: 14,
+                                              color: Colors.black54,
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Flexible(
+                                              child: Text(
+                                                orderData['time'] != null
+                                                    ? (orderData['time']
+                                                              as Timestamp)
+                                                          .toDate()
+                                                          .toString()
+                                                          .split('.')[0]
+                                                    : 'N/A',
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 12,
+                                                  color: Colors.black54,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 6,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.green.withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(
+                                        color: Colors.green.withOpacity(0.3),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      "Live",
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 12,
+                                        color: Colors.green.shade700,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
         );
       },
     );
@@ -1671,7 +1965,12 @@ class _WaiterMenuViewState extends State<WaiterMenuView> {
           ],
         ),
         actions: [
-          // 🌟 FIX: Premium Table Grid Popup Button
+          // 🌟 NAYA KOT HISTORY BUTTON YAHAN ADD HUA
+          IconButton(
+            icon: const Icon(Icons.history),
+            tooltip: 'KOT History',
+            onPressed: _showKOTHistoryDialog,
+          ),
           Container(
             margin: const EdgeInsets.only(right: 15, top: 8, bottom: 8),
             child: InkWell(

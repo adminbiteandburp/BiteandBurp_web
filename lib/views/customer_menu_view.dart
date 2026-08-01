@@ -188,8 +188,14 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
                 "category": "Testing",
                 "isVeg": true,
                 "variants": [
-                  {"name": "Small", "price": 0.0},
-                  {"name": "Medium", "price": 15.0},
+                  {
+                    "name": "Small",
+                    "price": 30.0,
+                  }, // 🌟 FIX: Made absolute price
+                  {
+                    "name": "Medium",
+                    "price": 45.0,
+                  }, // 🌟 FIX: Made absolute price
                 ],
                 "addOns": [
                   {"name": "Extra Cheese", "price": 10.0},
@@ -202,8 +208,14 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
                 "category": "Testing",
                 "isVeg": true,
                 "variants": [
-                  {"name": "Regular", "price": 0.0},
-                  {"name": "Cheese Burst", "price": 120.0},
+                  {
+                    "name": "Regular",
+                    "price": 30.0,
+                  }, // 🌟 FIX: Made absolute price
+                  {
+                    "name": "Cheese Burst",
+                    "price": 150.0,
+                  }, // 🌟 FIX: Made absolute price
                 ],
                 "addOns": [
                   {"name": "Olives", "price": 15.0},
@@ -1231,8 +1243,8 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
               ),
               child: Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 20,
+                  horizontal: 16, // 🌟 FIX: Sleek layout for mobile
+                  vertical: 12,
                 ),
                 height: MediaQuery.of(context).size.height * 0.75,
                 child: Column(
@@ -1241,57 +1253,84 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
+                        Text(
                           "Your Order",
-                          style: TextStyle(
-                            fontSize: 24,
+                          style: GoogleFonts.cormorantGaramond(
+                            // 🌟 FIX: Premium styling
+                            fontSize: 28,
                             fontWeight: FontWeight.w900,
-                            color: Colors.black87,
+                            color: const Color(0xFF1A1B2F),
                           ),
                         ),
+                        // 🌟 FIX: Restored Clear Cart Button
                         TextButton.icon(
                           onPressed: () {
-                            setState(() {
+                            setModalState(() {
                               cart.clear();
+                              itemPrices.clear();
                               itemNotes.clear();
                               showNoteField.clear();
                             });
+                            setState(
+                              () {},
+                            ); // Yahan parent UI ko force rebuild kar rahe hain
+                            _saveSessionData();
                             Navigator.pop(context);
                           },
                           icon: const Icon(
-                            Icons.delete_outline,
+                            Icons.delete_outline_rounded,
                             color: Colors.redAccent,
-                            size: 20,
+                            size: 18,
                           ),
                           label: const Text(
                             "Clear",
                             style: TextStyle(
                               color: Colors.redAccent,
                               fontWeight: FontWeight.bold,
-                              fontSize: 16,
+                              fontSize: 14,
                             ),
                           ),
                         ),
                       ],
                     ),
-                    const Divider(color: Colors.black12, height: 30),
+                    const Divider(
+                      color: Colors.black12,
+                      height: 12,
+                    ), // 🌟 FIX: Compact height
                     Expanded(
                       child: ListView(
                         physics: const BouncingScrollPhysics(),
                         children: cart.keys.map((itemName) {
-                          int qty = cart[itemName]!;
-                          double price = itemPrices[itemName]!;
+                          int qty = cart[itemName] ?? 1;
+
+                          // 🌟 FIX: Safe price lookup to prevent crash on mock localhost variants
+                          final String baseName = itemName
+                              .split(" - ")
+                              .first
+                              .split(" + ")
+                              .first;
+                          final MenuItem originalItem = dummyItems.firstWhere(
+                            (item) => item.name == baseName,
+                            orElse: () => MenuItem(
+                              id: '',
+                              name: baseName,
+                              price: 0.0,
+                              isVeg: true,
+                              category: '',
+                            ),
+                          );
+                          double price =
+                              itemPrices[itemName] ?? originalItem.price;
+
                           bool isNoteOpen = showNoteField[itemName] ?? false;
 
                           return Container(
                             margin: const EdgeInsets.only(
-                              bottom: 24,
-                            ), // 🌟 FIX: Updated bottom margin
+                              bottom: 12, // 🌟 FIX: Compact bottom margin
+                            ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // ✅ YAHAN SE NAYA CODE PASTE KARO ✅
-                                // 🌟 NAYA LAYOUT LINE 1: FULL WIDTH ITEM TITLE
                                 Text(
                                   itemName,
                                   style: GoogleFonts.poppins(
@@ -1301,8 +1340,9 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
                                     height: 1.3,
                                   ),
                                 ),
-                                const SizedBox(height: 12),
-
+                                const SizedBox(
+                                  height: 6,
+                                ), // 🌟 FIX: Compact title gap
                                 // 🌟 NAYA LAYOUT LINE 2: ACTION ROW (Note + Qty + Price)
                                 Row(
                                   mainAxisAlignment:
@@ -1671,7 +1711,7 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
                               firstCurve: Curves.easeInOutCubic,
                               secondCurve: Curves.easeInOutCubic,
                               crossFadeState:
-                                  (showOverallNote || overallNote.isNotEmpty)
+                                  (showOverallNote) // 🌟 FIX: Strictly shrink when saved
                                   ? CrossFadeState
                                         .showSecond // State 2: TextField Dikhao
                                   : CrossFadeState
@@ -1682,42 +1722,56 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
                                     40, // 🌟 FIX: Height exactly 40 par lock ki
                                 child: Row(
                                   children: [
-                                    // Compact Instruction Button
                                     InkWell(
-                                      onTap: () => setModalState(
-                                        () => showOverallNote = true,
-                                      ),
-                                      borderRadius: BorderRadius.circular(8),
+                                      onTap: () {
+                                        setModalState(() {
+                                          showOverallNote = true;
+                                        });
+                                      },
+                                      borderRadius: BorderRadius.circular(12),
                                       child: Container(
                                         padding: const EdgeInsets.symmetric(
                                           horizontal: 12,
+                                          vertical: 8,
                                         ),
-                                        alignment: Alignment.center,
                                         decoration: BoxDecoration(
-                                          color: Colors.deepPurple.withOpacity(
-                                            0.05,
-                                          ),
                                           borderRadius: BorderRadius.circular(
                                             12,
                                           ),
                                           border: Border.all(
-                                            color: Colors.deepPurple
-                                                .withOpacity(0.2),
+                                            color: overallNote.isNotEmpty
+                                                ? Colors.green.withOpacity(0.4)
+                                                : Colors.deepPurple.withOpacity(
+                                                    0.2,
+                                                  ),
                                           ),
+                                          color: overallNote.isNotEmpty
+                                              ? Colors.green.shade50
+                                              : Colors.transparent,
                                         ),
                                         child: Row(
                                           children: [
                                             Icon(
-                                              Icons.edit_note,
+                                              overallNote.isNotEmpty
+                                                  ? Icons.check_circle
+                                                  : Icons
+                                                        .edit_note, // 🌟 FIX: Dynamic Icon Checkmark
                                               size: 16,
-                                              color: Colors.deepPurple.shade700,
+                                              color: overallNote.isNotEmpty
+                                                  ? Colors.green.shade700
+                                                  : Colors.deepPurple.shade700,
                                             ),
                                             const SizedBox(width: 4),
                                             Text(
-                                              "Instructions",
+                                              overallNote.isNotEmpty
+                                                  ? "Instructions ✓"
+                                                  : "Instructions", // 🌟 FIX: Dynamic Label
                                               style: GoogleFonts.poppins(
-                                                color:
-                                                    Colors.deepPurple.shade700,
+                                                color: overallNote.isNotEmpty
+                                                    ? Colors.green.shade700
+                                                    : Colors
+                                                          .deepPurple
+                                                          .shade700,
                                                 fontWeight: FontWeight.w600,
                                                 fontSize: 12,
                                               ),
@@ -1747,12 +1801,24 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
                                               ),
                                               child: InkWell(
                                                 onTap: () {
-                                                  _updateCart(
-                                                    crossItem.name,
-                                                    crossItem.price,
-                                                    1,
-                                                  );
-                                                  setModalState(() {});
+                                                  // 🌟 FIX: Directly adding mock variants bypasses logic, route to Variant sheet instead
+                                                  if (crossItem
+                                                      .variants
+                                                      .isNotEmpty) {
+                                                    Navigator.pop(
+                                                      context,
+                                                    ); // Close cart temporarily
+                                                    showVariantsPopup(
+                                                      crossItem,
+                                                    );
+                                                  } else {
+                                                    _updateCart(
+                                                      crossItem.name,
+                                                      crossItem.price,
+                                                      1,
+                                                    );
+                                                    setModalState(() {});
+                                                  }
                                                 },
                                                 borderRadius:
                                                     BorderRadius.circular(20),
@@ -1964,7 +2030,9 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
                         );
                       },
                     ),
-                    const SizedBox(height: 15),
+                    const SizedBox(
+                      height: 8,
+                    ), // 🌟 FIX: Slimmer Place order gap
                     // Slim Place Order Premium Area
                     Container(
                       decoration: BoxDecoration(
