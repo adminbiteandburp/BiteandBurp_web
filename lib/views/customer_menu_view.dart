@@ -56,7 +56,17 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
   // 🌟 SECURITY: Anti-Tamper Key Verification
   Future<void> _validateTableKey() async {
     try {
-      String? urlKey = Uri.base.queryParameters['key'];
+      // 🌟 FIX 1: Manually parse Hash URL to extract Key securely
+      String fullUrl = Uri.base.toString();
+      String? urlKey;
+
+      if (fullUrl.contains('?key=')) {
+        urlKey = fullUrl
+            .split('?key=')
+            .last
+            .split('&')
+            .first; // Extract key directly from string
+      }
 
       if (urlKey == null || urlKey.isEmpty) {
         if (mounted)
@@ -67,33 +77,24 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
         return;
       }
 
-      // 🌟 FIX: Extract Table ID directly from the URL Path
-      String fullUrl = Uri.base.toString();
-      String urlWithoutQuery = fullUrl
-          .split('?')
-          .first; // '?key=...' ko hata diya
-      if (urlWithoutQuery.endsWith('/')) {
-        urlWithoutQuery = urlWithoutQuery.substring(
-          0,
-          urlWithoutQuery.length - 1,
-        ); // Extra slash hataya
+      // 🌟 FIX 2: Find table by 'name' instead of 'document ID'
+      String expectedTableName =
+          widget.tableId; // 🌟 FIX: Use tableId instead of tableNumber
+      if (!expectedTableName.toLowerCase().contains('table')) {
+        expectedTableName =
+            'Table ${widget.tableId}'; // fallback if only '5' comes
       }
 
-      // Last part table ID hoga (e.g., /menu/H101/5 -> '5')
-      String cleanedTableId = urlWithoutQuery
-          .split('/')
-          .last
-          .replaceAll('Table ', '')
-          .trim();
-
-      var doc = await FirebaseFirestore.instance
+      var querySnapshot = await FirebaseFirestore.instance
           .collection('restaurants')
           .doc(widget.hotelId)
           .collection('tables')
-          .doc(cleanedTableId)
+          .where('name', isEqualTo: expectedTableName)
+          .limit(1)
           .get();
 
-      if (doc.exists && doc.data()?['key'] == urlKey) {
+      if (querySnapshot.docs.isNotEmpty &&
+          querySnapshot.docs.first.data()['key'] == urlKey) {
         if (mounted)
           setState(() {
             isKeyValid = true;
