@@ -39,6 +39,8 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
   // 🌟 CUSTOMER SESSION VARIABLES
   String customerName = "";
   String customerPhone = "";
+  String realFirebaseTableId =
+      ""; // 🌟 FIX: Asli ID (t16...) save karne ke liye
 
   // 🌟 SECURITY VARIABLES
   bool isValidatingKey = true;
@@ -95,6 +97,8 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
 
       if (querySnapshot.docs.isNotEmpty &&
           querySnapshot.docs.first.data()['key'] == urlKey) {
+        realFirebaseTableId =
+            querySnapshot.docs.first.id; // 🌟 FIX: Asli ID save kar li
         if (mounted)
           setState(() {
             isKeyValid = true;
@@ -1227,17 +1231,15 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
           .collection('live_orders')
           .doc();
 
+      // 🌟 FIX: Asli ID 't16...' ka use karke table update karega
       DocumentReference tableRef = FirebaseFirestore.instance
           .collection('restaurants')
           .doc(widget.hotelId)
           .collection('tables')
-          .doc(
-            widget.tableId.toString().replaceAll('Table ', '').trim(),
-          ); // 🌟 FIX: Cleaned ID format
+          .doc(realFirebaseTableId);
 
       batch.set(orderRef, {
-        // 🌟 BUG 4 FIX: POS App format match karne ke liye "Table " word ko clean kar diya
-        'tableId': widget.tableId.toString().replaceAll('Table ', '').trim(),
+        'tableId': realFirebaseTableId, // 🌟 FIX: KOT mein asli ID jayegi
         'tableName':
             'Table ${widget.tableId.toString().replaceAll('Table ', '').trim()}',
         'customerName': customerName, // Session data pass
