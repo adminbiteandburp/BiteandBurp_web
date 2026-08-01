@@ -255,7 +255,8 @@ class _WaiterMenuViewState extends State<WaiterMenuView> {
       };
     });
 
-    await FirebaseFirestore.instance
+    // 🌟 NAYA FIX: Optimistic UI - Removed 'await' to instantly show success screen
+    FirebaseFirestore.instance
         .collection('restaurants')
         .doc(widget.hotelId)
         .collection('live_orders')
@@ -268,7 +269,8 @@ class _WaiterMenuViewState extends State<WaiterMenuView> {
           'overallNote': overallNote,
           'time': FieldValue.serverTimestamp(),
           'status': 'Auto-Accept',
-        });
+        })
+        .catchError((e) => debugPrint("Background Order error: $e"));
 
     setState(() {
       itemNotes.clear();
@@ -1718,10 +1720,14 @@ class _WaiterMenuViewState extends State<WaiterMenuView> {
                           var orderData =
                               snapshot.data!.docs[index].data()
                                   as Map<String, dynamic>;
+                          // 🌟 NAYA FIX: Extract Items and format them
+                          Map<String, dynamic> items =
+                              orderData['items'] as Map<String, dynamic>? ?? {};
+
                           return Card(
                             elevation: 0,
                             color: Colors.deepPurple.shade50.withOpacity(0.3),
-                            margin: const EdgeInsets.symmetric(vertical: 6),
+                            margin: const EdgeInsets.symmetric(vertical: 8),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                               side: BorderSide(
@@ -1729,87 +1735,166 @@ class _WaiterMenuViewState extends State<WaiterMenuView> {
                               ),
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Row(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(12),
-                                    decoration: const BoxDecoration(
-                                      color: Colors.white,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: const Icon(
-                                      Icons.table_restaurant,
-                                      color: Colors.deepPurple,
-                                      size: 22,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 15),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Table ${orderData['tableNumber'] ?? 'N/A'}',
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.deepPurple.shade900,
-                                          ),
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(10),
+                                        decoration: const BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.circle,
                                         ),
-                                        const SizedBox(height: 6),
-                                        Row(
+                                        child: const Icon(
+                                          Icons.table_restaurant,
+                                          color: Colors.deepPurple,
+                                          size: 20,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
-                                            const Icon(
-                                              Icons.access_time,
-                                              size: 14,
-                                              color: Colors.black54,
+                                            Text(
+                                              // 🌟 FIX: Use tableName instead of tableNumber
+                                              orderData['tableName'] ??
+                                                  'Table N/A',
+                                              style: GoogleFonts.poppins(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                                color:
+                                                    Colors.deepPurple.shade900,
+                                              ),
                                             ),
-                                            const SizedBox(width: 4),
-                                            Flexible(
-                                              child: Text(
-                                                orderData['time'] != null
-                                                    ? (orderData['time']
-                                                              as Timestamp)
-                                                          .toDate()
-                                                          .toString()
-                                                          .split('.')[0]
-                                                    : 'N/A',
-                                                style: GoogleFonts.poppins(
-                                                  fontSize: 12,
+                                            const SizedBox(height: 2),
+                                            Row(
+                                              children: [
+                                                const Icon(
+                                                  Icons.access_time,
+                                                  size: 12,
                                                   color: Colors.black54,
                                                 ),
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 1,
-                                              ),
+                                                const SizedBox(width: 4),
+                                                Flexible(
+                                                  child: Text(
+                                                    orderData['time'] != null
+                                                        ? (orderData['time']
+                                                                  as Timestamp)
+                                                              .toDate()
+                                                              .toString()
+                                                              .split('.')[0]
+                                                        : 'N/A',
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 11,
+                                                      color: Colors.black54,
+                                                    ),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ],
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 6,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.green.withOpacity(0.1),
-                                      borderRadius: BorderRadius.circular(20),
-                                      border: Border.all(
-                                        color: Colors.green.withOpacity(0.3),
                                       ),
-                                    ),
-                                    child: Text(
-                                      "Live",
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 12,
-                                        color: Colors.green.shade700,
-                                        fontWeight: FontWeight.bold,
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                          vertical: 4,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.green.withOpacity(0.1),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                          border: Border.all(
+                                            color: Colors.green.withOpacity(
+                                              0.3,
+                                            ),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          orderData['status'] ?? "Live",
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 11,
+                                            color: Colors.green.shade700,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                    ],
                                   ),
+                                  const SizedBox(height: 12),
+                                  const Divider(
+                                    color: Colors.black12,
+                                    height: 1,
+                                  ),
+                                  const SizedBox(height: 12),
+                                  // 🌟 NAYA FIX: Items Render List
+                                  ...items.entries.map((entry) {
+                                    String itemName = entry.key;
+                                    var itemData = entry.value;
+                                    int qty = itemData is Map
+                                        ? (itemData['quantity'] ?? 1)
+                                        : itemData;
+                                    String itemNote = itemData is Map
+                                        ? (itemData['note'] ?? "")
+                                        : "";
+
+                                    return Padding(
+                                      padding: const EdgeInsets.only(
+                                        bottom: 8.0,
+                                      ),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "${qty}x",
+                                            style: GoogleFonts.poppins(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.deepPurple.shade700,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 10),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  itemName,
+                                                  style: GoogleFonts.poppins(
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.black87,
+                                                    fontSize: 13,
+                                                  ),
+                                                ),
+                                                if (itemNote.trim().isNotEmpty)
+                                                  Text(
+                                                    "Note: $itemNote",
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 11,
+                                                      color:
+                                                          Colors.grey.shade600,
+                                                      fontStyle:
+                                                          FontStyle.italic,
+                                                    ),
+                                                  ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }),
                                 ],
                               ),
                             ),
@@ -1872,58 +1957,112 @@ class _WaiterMenuViewState extends State<WaiterMenuView> {
                 const SizedBox(height: 15),
                 Flexible(
                   child: SingleChildScrollView(
-                    child: GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                            crossAxisSpacing: 12,
-                            mainAxisSpacing: 12,
-                            childAspectRatio: 1.0,
-                          ),
-                      itemCount: availableTables.length,
-                      itemBuilder: (context, index) {
-                        String table = availableTables[index];
-                        return InkWell(
-                          onTap: () {
-                            Navigator.pop(context); // Close table dialog
-                            setState(() {
-                              selectedTable = table; // 🌟 Set target table
-                            });
-                            _fireKOT(); // 🔥 FINAL STEP: FIRE KOT TO APP/PRINTER
-                          },
-                          borderRadius: BorderRadius.circular(12),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: Colors.grey.shade300,
-                                width: 1,
+                    child: StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('restaurants')
+                          .doc(widget.hotelId)
+                          .collection('tables')
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+
+                        // Create a map of tableId to isOccupied status
+                        Map<String, bool> tableStatusMap = {};
+                        if (snapshot.hasData) {
+                          for (var doc in snapshot.data!.docs) {
+                            var data = doc.data() as Map<String, dynamic>;
+                            tableStatusMap[doc.id] =
+                                data['isOccupied'] ?? false;
+                          }
+                        }
+
+                        return GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                crossAxisSpacing: 12,
+                                mainAxisSpacing: 12,
+                                childAspectRatio: 1.0,
                               ),
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(
-                                  Icons.table_restaurant_rounded,
-                                  color: Colors.orangeAccent,
-                                  size: 26,
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  table,
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.black87,
+                          itemCount: availableTables.length,
+                          itemBuilder: (context, index) {
+                            String table = availableTables[index];
+                            String tableId = table
+                                .replaceAll('Table ', '')
+                                .trim();
+                            bool isOccupied = tableStatusMap[tableId] ?? false;
+
+                            // 🌟 FIX: Dynamic Colors Based on Live Occupancy Status
+                            Color bgColor = isOccupied
+                                ? Colors.orange.shade50
+                                : Colors.green.shade50;
+                            Color borderColor = isOccupied
+                                ? Colors.orange.shade300
+                                : Colors.green.shade300;
+                            Color iconColor = isOccupied
+                                ? Colors.orange.shade700
+                                : Colors.green.shade700;
+                            String statusText = isOccupied
+                                ? "Occupied"
+                                : "Empty";
+
+                            return InkWell(
+                              onTap: () {
+                                Navigator.pop(context); // Close table dialog
+                                setState(() {
+                                  selectedTable = table; // 🌟 Set target table
+                                });
+                                _fireKOT(); // 🔥 FINAL STEP: FIRE KOT TO APP/PRINTER
+                              },
+                              borderRadius: BorderRadius.circular(12),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: bgColor,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: borderColor,
+                                    width: 1.5,
                                   ),
-                                  textAlign: TextAlign.center,
                                 ),
-                              ],
-                            ),
-                          ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.table_restaurant_rounded,
+                                      color: iconColor,
+                                      size: 24,
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      table,
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black87,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      statusText,
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w600,
+                                        color: iconColor,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
                         );
                       },
                     ),

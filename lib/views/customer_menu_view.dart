@@ -1092,13 +1092,14 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
       batch.update(tableRef, {'isOccupied': true, 'status': 'Occupied'});
 
       // Dono operations ek sath execute honge, fail hue toh ghost order nahi banega
-      await batch.commit();
+      // 🌟 NAYA FIX: Optimistic UI - Removed 'await' and 5s delay so UI updates instantly (Fire & Forget)
+      batch.commit().catchError((e) {
+        debugPrint("Background Firestore batch error: $e");
+      });
 
-      // Wait for 5 seconds cooldown to allow stream to fully catch up
-      await Future.delayed(const Duration(seconds: 5));
       isPlacingOrderLock = false; // Release lock
     } catch (e) {
-      debugPrint("Firestore batch error: $e");
+      debugPrint("Sync error: $e");
       isPlacingOrderLock = false;
       if (mounted) {
         setState(() => isPlacingOrder = false);
