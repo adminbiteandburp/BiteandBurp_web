@@ -492,17 +492,14 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
           final data = snapshot.data() as Map<String, dynamic>?;
           if (data == null) return;
 
-          final currentKey = data['key'];
-          final hasKeyChanged =
-              initialUrlKey != null && currentKey != initialUrlKey;
-
           // Dono fields check karo: POS app wala 'isOccupied' bhi aur string 'status' bhi
           // FIX: Cooldown/Lock Logic for new customers
           final isTableFree =
               !isPlacingOrderLock && // Skip wiping if we are actively placing an order
               (data['isOccupied'] == false || data['status'] == 'Available');
 
-          if (isTableFree || hasKeyChanged) {
+          // 🌟 FIX: Sirf unlogo ko nikalo jinhone actual order (placedOrders) kiya ho aur table free ho gayi ho
+          if (isTableFree && placedOrders.isNotEmpty) {
             _clearSessionData();
             setState(() {
               isKeyValid =
@@ -1140,100 +1137,10 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
     );
   }
 
-  // 🌟 NAYA FUNCTION: Actual Firestore Database Pushing Logic
   Future<void> _processOrderToFirestore() async {
     setState(() => isPlacingOrder = true);
 
-    // 🌟 SECURITY LAYER 2: Geofencing Check (Anti-Remote Order)
-    try {
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied ||
-            permission == LocationPermission.deniedForever) {
-          setState(() => isPlacingOrder = false);
-          showDialog(
-            context: context,
-            builder: (ctx) => AlertDialog(
-              title: const Text("Location Required"),
-              content: const Text(
-                "Please allow location access to verify you are at the restaurant.",
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(ctx),
-                  child: const Text("OK"),
-                ),
-              ],
-            ),
-          );
-          return;
-        }
-      }
-
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
-      var restDoc = await FirebaseFirestore.instance
-          .collection('restaurants')
-          .doc(widget.hotelId)
-          .get();
-
-      if (restDoc.exists &&
-          restDoc.data()!.containsKey('lat') &&
-          restDoc.data()!.containsKey('lng')) {
-        double restLat =
-            double.tryParse(restDoc.data()!['lat'].toString()) ?? 0.0;
-        double restLng =
-            double.tryParse(restDoc.data()!['lng'].toString()) ?? 0.0;
-
-        double distanceInMeters = Geolocator.distanceBetween(
-          position.latitude,
-          position.longitude,
-          restLat,
-          restLng,
-        );
-
-        if (distanceInMeters > 100) {
-          // 🌟 NAYA FIX: Updated to 100 meters safe limit
-          setState(() => isPlacingOrder = false);
-          showDialog(
-            context: context,
-            builder: (ctx) => AlertDialog(
-              title: const Text("Access Denied"),
-              content: const Text(
-                "You are too far from the restaurant. Please order from your table inside the premises.",
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(ctx),
-                  child: const Text("OK"),
-                ),
-              ],
-            ),
-          );
-          return;
-        }
-      }
-    } catch (e) {
-      setState(() => isPlacingOrder = false);
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text("Location Error"),
-          content: const Text(
-            "Could not verify your location. Please ensure GPS is enabled.",
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text("OK"),
-            ),
-          ],
-        ),
-      );
-      return;
-    }
+    // 🌟 SECURITY LAYER 2: Geolocation Guard removed for smoother ordering
 
     Map<String, dynamic> detailedItems = {};
     cart.forEach((itemName, qty) {
