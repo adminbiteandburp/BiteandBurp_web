@@ -1976,7 +1976,8 @@ class _WaiterMenuViewState extends State<WaiterMenuView> {
                         if (snapshot.hasData) {
                           for (var doc in snapshot.data!.docs) {
                             var data = doc.data() as Map<String, dynamic>;
-                            tableStatusMap[doc.id] =
+                            // 🌟 FIX: Map using the real table name (like "Table 1") instead of random doc.id
+                            tableStatusMap[data['name'] ?? doc.id] =
                                 data['isOccupied'] ?? false;
                           }
                         }
@@ -1997,17 +1998,21 @@ class _WaiterMenuViewState extends State<WaiterMenuView> {
                             String tableId = table
                                 .replaceAll('Table ', '')
                                 .trim();
-                            bool isOccupied = tableStatusMap[tableId] ?? false;
+                            // 🌟 FIX: Lookup using the full table name string
+                            bool isOccupied = tableStatusMap[table] ?? false;
 
                             // 🌟 FIX: Dynamic Colors Based on Live Occupancy Status
-                            Color bgColor = isOccupied
-                                ? Colors.orange.shade50
-                                : Colors.green.shade50;
+                            Color bgColor = Colors
+                                .white; // 🌟 FIX: Background hamesha white (No fill)
                             Color borderColor = isOccupied
-                                ? Colors.orange.shade300
-                                : Colors.green.shade300;
+                                ? Colors
+                                      .orange
+                                      .shade400 // 🌟 Frame/Border: Orange ya Green
+                                : Colors.green.shade400;
                             Color iconColor = isOccupied
-                                ? Colors.orange.shade700
+                                ? Colors
+                                      .orange
+                                      .shade700 // 🌟 Icon aur Text: Orange ya Green
                                 : Colors.green.shade700;
                             String statusText = isOccupied
                                 ? "Occupied"
@@ -2015,6 +2020,19 @@ class _WaiterMenuViewState extends State<WaiterMenuView> {
 
                             return InkWell(
                               onTap: () {
+                                // 🌟 FIX: Agar table occupied hai toh error dikhao aur rok do
+                                if (isOccupied) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        "Table is already occupied!",
+                                      ),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                  return;
+                                }
+
                                 Navigator.pop(context); // Close table dialog
                                 setState(() {
                                   selectedTable = table; // 🌟 Set target table
