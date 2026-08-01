@@ -59,20 +59,30 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
       String? urlKey = Uri.base.queryParameters['key'];
 
       if (urlKey == null || urlKey.isEmpty) {
-        if (mounted) {
+        if (mounted)
           setState(() {
             isKeyValid = false;
             isValidatingKey = false;
           });
-        }
         return;
       }
 
-      // 🌟 FIX: Fetch table directly from URL parameters instead of widget.tableNumber
-      String? tableParam =
-          Uri.base.queryParameters['table'] ??
-          Uri.base.queryParameters['tableId'];
-      String cleanedTableId = (tableParam ?? '')
+      // 🌟 FIX: Extract Table ID directly from the URL Path
+      String fullUrl = Uri.base.toString();
+      String urlWithoutQuery = fullUrl
+          .split('?')
+          .first; // '?key=...' ko hata diya
+      if (urlWithoutQuery.endsWith('/')) {
+        urlWithoutQuery = urlWithoutQuery.substring(
+          0,
+          urlWithoutQuery.length - 1,
+        ); // Extra slash hataya
+      }
+
+      // Last part table ID hoga (e.g., /menu/H101/5 -> '5')
+      String cleanedTableId = urlWithoutQuery
+          .split('/')
+          .last
           .replaceAll('Table ', '')
           .trim();
 
@@ -84,27 +94,24 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
           .get();
 
       if (doc.exists && doc.data()?['key'] == urlKey) {
-        if (mounted) {
+        if (mounted)
           setState(() {
             isKeyValid = true;
             isValidatingKey = false;
           });
-        }
       } else {
-        if (mounted) {
+        if (mounted)
           setState(() {
             isKeyValid = false;
             isValidatingKey = false;
           });
-        }
       }
     } catch (e) {
-      if (mounted) {
+      if (mounted)
         setState(() {
           isKeyValid = false;
           isValidatingKey = false;
         });
-      }
     }
   }
 
