@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -39,12 +40,72 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
   String customerName = "";
   String customerPhone = "";
 
+  // 🌟 SECURITY VARIABLES
+  bool isValidatingKey = true;
+  bool isKeyValid = false;
+
   @override
   void initState() {
     super.initState();
+    _validateTableKey(); // 🌟 SECURITY: Check URL tampering
     _loadSessionData(); // 💾 Restore session on startup
     _fetchLiveMenu(); // 🌟 Bridge Connect: Live data fetch start
     _listenToTableStatus(); // 🌟 FIX: Start listening to the table's live status
+  }
+
+  // 🌟 SECURITY: Anti-Tamper Key Verification
+  Future<void> _validateTableKey() async {
+    try {
+      String? urlKey = Uri.base.queryParameters['key'];
+
+      if (urlKey == null || urlKey.isEmpty) {
+        if (mounted) {
+          setState(() {
+            isKeyValid = false;
+            isValidatingKey = false;
+          });
+        }
+        return;
+      }
+
+      // 🌟 FIX: Fetch table directly from URL parameters instead of widget.tableNumber
+      String? tableParam =
+          Uri.base.queryParameters['table'] ??
+          Uri.base.queryParameters['tableId'];
+      String cleanedTableId = (tableParam ?? '')
+          .replaceAll('Table ', '')
+          .trim();
+
+      var doc = await FirebaseFirestore.instance
+          .collection('restaurants')
+          .doc(widget.hotelId)
+          .collection('tables')
+          .doc(cleanedTableId)
+          .get();
+
+      if (doc.exists && doc.data()?['key'] == urlKey) {
+        if (mounted) {
+          setState(() {
+            isKeyValid = true;
+            isValidatingKey = false;
+          });
+        }
+      } else {
+        if (mounted) {
+          setState(() {
+            isKeyValid = false;
+            isValidatingKey = false;
+          });
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          isKeyValid = false;
+          isValidatingKey = false;
+        });
+      }
+    }
   }
 
   // 🌟 FETCH LIVE MENU FROM FIRESTORE (SAFE PARSING)
@@ -1045,6 +1106,97 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
   // 🌟 NAYA FUNCTION: Actual Firestore Database Pushing Logic
   Future<void> _processOrderToFirestore() async {
     setState(() => isPlacingOrder = true);
+
+    // 🌟 SECURITY LAYER 2: Geofencing Check (Anti-Remote Order)
+    try {
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied ||
+            permission == LocationPermission.deniedForever) {
+          setState(() => isPlacingOrder = false);
+          showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: const Text("Location Required"),
+              content: const Text(
+                "Please allow location access to verify you are at the restaurant.",
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx),
+                  child: const Text("OK"),
+                ),
+              ],
+            ),
+          );
+          return;
+        }
+      }
+
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      var restDoc = await FirebaseFirestore.instance
+          .collection('restaurants')
+          .doc(widget.hotelId)
+          .get();
+
+      if (restDoc.exists &&
+          restDoc.data()!.containsKey('lat') &&
+          restDoc.data()!.containsKey('lng')) {
+        double restLat =
+            double.tryParse(restDoc.data()!['lat'].toString()) ?? 0.0;
+        double restLng =
+            double.tryParse(restDoc.data()!['lng'].toString()) ?? 0.0;
+
+        double distanceInMeters = Geolocator.distanceBetween(
+          position.latitude,
+          position.longitude,
+          restLat,
+          restLng,
+        );
+
+        if (distanceInMeters > 100) {
+          // 🌟 NAYA FIX: Updated to 100 meters safe limit
+          setState(() => isPlacingOrder = false);
+          showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: const Text("Access Denied"),
+              content: const Text(
+                "You are too far from the restaurant. Please order from your table inside the premises.",
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx),
+                  child: const Text("OK"),
+                ),
+              ],
+            ),
+          );
+          return;
+        }
+      }
+    } catch (e) {
+      setState(() => isPlacingOrder = false);
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text("Location Error"),
+          content: const Text(
+            "Could not verify your location. Please ensure GPS is enabled.",
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text("OK"),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
 
     Map<String, dynamic> detailedItems = {};
     cart.forEach((itemName, qty) {
@@ -3599,8 +3751,45 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
 
   @override
   Widget build(BuildContext context) {
+    // 🌟 SECURITY CHECK: Block rendering if key is missing or tampered
+    if (isValidatingKey) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+    if (!isKeyValid) {
+      return Scaffold(
+        backgroundColor: const Color(0xFFF8F9FE),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.gpp_bad_rounded,
+                color: Colors.redAccent,
+                size: 80,
+              ),
+              const SizedBox(height: 20),
+              Text(
+                "Access Denied",
+                style: GoogleFonts.poppins(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                "Invalid or expired QR link.",
+                style: GoogleFonts.poppins(fontSize: 16, color: Colors.black54),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FE),
+
       // 🌟 PREMIUM APP BAR (Hidden on Home/Review)
       appBar: (currentStep == 0 || currentStep == 4)
           ? null
