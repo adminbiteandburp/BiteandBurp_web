@@ -1783,194 +1783,34 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
                         }).toList(),
                       ),
                     ),
-                    const Divider(color: Colors.black12, height: 20),
+                    const Divider(color: Colors.black12, height: 8),
 
                     // 🌟 NAYA FEATURE: Smart Cross-Sell Belt & Compact Note Button
-                    Builder(
-                      builder: (ctx) {
-                        // 1. Live database se items filter karo (10 se 50 rupaye wale)
-                        final crossSellItems = dummyItems
-                            .where(
-                              (item) => item.price >= 10 && item.price <= 50,
-                            )
-                            .toList();
+                    StreamBuilder<DocumentSnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('restaurants')
+                          .doc(widget.hotelId)
+                          .snapshots(),
+                      builder: (ctx, snapshot) {
+                        final restaurantData =
+                            snapshot.data?.data() as Map<String, dynamic>?;
+                        final List<dynamic>? suggestedIds =
+                            restaurantData?['suggestedItemIds'];
+
+                        final crossSellItems = dummyItems.where((item) {
+                          if (suggestedIds != null && suggestedIds.isNotEmpty) {
+                            return suggestedIds.contains(item.id);
+                          }
+                          return item.price >= 10 && item.price <= 50;
+                        }).toList();
 
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // 🌟 NAYA FIX: Butter Smooth AnimatedCrossFade (Zero Vertical Jump)
-                            AnimatedCrossFade(
-                              duration: const Duration(
-                                milliseconds: 350,
-                              ), // Thoda slow aur premium feel ke liye
-                              firstCurve: Curves.easeInOutCubic,
-                              secondCurve: Curves.easeInOutCubic,
-                              crossFadeState:
-                                  (showOverallNote) // 🌟 FIX: Strictly shrink when saved
-                                  ? CrossFadeState
-                                        .showSecond // State 2: TextField Dikhao
-                                  : CrossFadeState
-                                        .showFirst, // State 1: Button + Belt Dikhao
-                              // --- STATE 1: BUTTON & CROSS-SELL BELT ---
-                              firstChild: SizedBox(
-                                height:
-                                    40, // 🌟 FIX: Height exactly 40 par lock ki
-                                child: Row(
-                                  children: [
-                                    InkWell(
-                                      onTap: () {
-                                        setModalState(() {
-                                          showOverallNote = true;
-                                        });
-                                      },
-                                      borderRadius: BorderRadius.circular(12),
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 12,
-                                          vertical: 8,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                          border: Border.all(
-                                            color: overallNote.isNotEmpty
-                                                ? Colors.green.withOpacity(0.4)
-                                                : Colors.deepPurple.withOpacity(
-                                                    0.2,
-                                                  ),
-                                          ),
-                                          color: overallNote.isNotEmpty
-                                              ? Colors.green.shade50
-                                              : Colors.transparent,
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              overallNote.isNotEmpty
-                                                  ? Icons.check_circle
-                                                  : Icons
-                                                        .edit_note, // 🌟 FIX: Dynamic Icon Checkmark
-                                              size: 16,
-                                              color: overallNote.isNotEmpty
-                                                  ? Colors.green.shade700
-                                                  : Colors.deepPurple.shade700,
-                                            ),
-                                            const SizedBox(width: 4),
-                                            Text(
-                                              overallNote.isNotEmpty
-                                                  ? "Instructions ✓"
-                                                  : "Instructions", // 🌟 FIX: Dynamic Label
-                                              style: GoogleFonts.poppins(
-                                                color: overallNote.isNotEmpty
-                                                    ? Colors.green.shade700
-                                                    : Colors
-                                                          .deepPurple
-                                                          .shade700,
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 12,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-
-                                    if (crossSellItems.isNotEmpty)
-                                      const SizedBox(width: 12),
-
-                                    // Horizontal Quick-Add Belt
-                                    if (crossSellItems.isNotEmpty)
-                                      Expanded(
-                                        child: ListView.builder(
-                                          scrollDirection: Axis.horizontal,
-                                          physics:
-                                              const BouncingScrollPhysics(),
-                                          itemCount: crossSellItems.length,
-                                          itemBuilder: (context, index) {
-                                            final crossItem =
-                                                crossSellItems[index];
-                                            return Padding(
-                                              padding: const EdgeInsets.only(
-                                                right: 8,
-                                              ),
-                                              child: InkWell(
-                                                onTap: () {
-                                                  // 🌟 FIX: Directly adding mock variants bypasses logic, route to Variant sheet instead
-                                                  if (crossItem
-                                                      .variants
-                                                      .isNotEmpty) {
-                                                    Navigator.pop(
-                                                      context,
-                                                    ); // Close cart temporarily
-                                                    showVariantsPopup(
-                                                      crossItem,
-                                                    );
-                                                  } else {
-                                                    _updateCart(
-                                                      crossItem.name,
-                                                      crossItem.price,
-                                                      1,
-                                                    );
-                                                    setModalState(() {});
-                                                  }
-                                                },
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                child: Container(
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                        horizontal: 14,
-                                                      ),
-                                                  alignment: Alignment.center,
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          20,
-                                                        ),
-                                                    border: Border.all(
-                                                      color:
-                                                          Colors.grey.shade300,
-                                                    ),
-                                                  ),
-                                                  child: Row(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    children: [
-                                                      Text(
-                                                        "${crossItem.name} • ₹${crossItem.price.toStringAsFixed(0)}",
-                                                        style:
-                                                            GoogleFonts.poppins(
-                                                              fontSize: 12,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              color: Colors
-                                                                  .black87,
-                                                            ),
-                                                      ),
-                                                      const SizedBox(width: 6),
-                                                      const Icon(
-                                                        Icons.add_circle,
-                                                        size: 14,
-                                                        color:
-                                                            Colors.deepPurple,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                  ],
-                                ),
-                              ),
-
-                              // --- STATE 2: TEXTFIELD OR SAVED LABEL SWITCH ---
-                              secondChild: showOverallNote
+                            // 🌟 NAYA FIX: Straight Forward Conditional UI Builder
+                            AnimatedSize(
+                              duration: const Duration(milliseconds: 300),
+                              child: showOverallNote
                                   ? SizedBox(
                                       height: 40,
                                       child: TextField(
@@ -1979,10 +1819,11 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
                                           () => overallNote = val,
                                         ),
                                         onSubmitted: (val) {
-                                          if (val.trim().isNotEmpty)
+                                          if (val.trim().isNotEmpty) {
                                             setModalState(
                                               () => showOverallNote = false,
                                             );
+                                          }
                                         },
                                         controller:
                                             TextEditingController(
@@ -2034,8 +1875,7 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
                                                         ?.unfocus();
                                                     setModalState(() {
                                                       overallNote = "";
-                                                      showOverallNote =
-                                                          false; // Fade back to Button
+                                                      showOverallNote = false;
                                                     });
                                                   },
                                                 )
@@ -2054,71 +1894,261 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
                                                     setModalState(
                                                       () => showOverallNote =
                                                           false,
-                                                    ); // Hides TextField, Shows Label
+                                                    );
                                                   },
                                                 ),
                                         ),
                                       ),
                                     )
-                                  : Container(
-                                      margin: const EdgeInsets.only(
-                                        top: 5,
-                                        bottom: 5,
-                                      ),
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                        vertical: 8,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: Colors.green.withOpacity(0.1),
-                                        borderRadius: BorderRadius.circular(10),
-                                        border: Border.all(
-                                          color: Colors.green.withOpacity(0.3),
-                                        ),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.check_circle,
-                                            color: Colors.green,
-                                            size: 18,
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Expanded(
-                                            child: Text(
-                                              "Instructions: $overallNote",
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 13,
-                                                color: Colors.green.shade800,
-                                                fontWeight: FontWeight.w600,
+                                  : Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        if (overallNote.isNotEmpty)
+                                          Container(
+                                            margin: const EdgeInsets.only(
+                                              bottom: 12,
+                                            ),
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 12,
+                                              vertical: 8,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: Colors.green.withOpacity(
+                                                0.1,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              border: Border.all(
+                                                color: Colors.green.withOpacity(
+                                                  0.3,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                          InkWell(
-                                            onTap: () => setModalState(
-                                              () => showOverallNote = true,
+                                            child: Row(
+                                              children: [
+                                                const Icon(
+                                                  Icons.check_circle,
+                                                  color: Colors.green,
+                                                  size: 18,
+                                                ),
+                                                const SizedBox(width: 8),
+                                                Expanded(
+                                                  child: Text(
+                                                    "Instructions: $overallNote",
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 13,
+                                                      color:
+                                                          Colors.green.shade800,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                    ),
+                                                  ),
+                                                ),
+                                                InkWell(
+                                                  onTap: () => setModalState(
+                                                    () =>
+                                                        showOverallNote = true,
+                                                  ),
+                                                  child: const Icon(
+                                                    Icons.edit,
+                                                    size: 18,
+                                                    color: Colors.deepPurple,
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 15),
+                                                InkWell(
+                                                  onTap: () =>
+                                                      setModalState(() {
+                                                        overallNote = "";
+                                                        showOverallNote = false;
+                                                      }),
+                                                  child: const Icon(
+                                                    Icons.delete,
+                                                    size: 18,
+                                                    color: Colors.red,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                            child: const Icon(
-                                              Icons.edit,
-                                              size: 18,
-                                              color: Colors.deepPurple,
-                                            ),
                                           ),
-                                          const SizedBox(width: 15),
-                                          InkWell(
-                                            onTap: () => setModalState(() {
-                                              overallNote = "";
-                                              showOverallNote =
-                                                  false; // Will fade back to normal button
-                                            }),
-                                            child: const Icon(
-                                              Icons.delete,
-                                              size: 18,
-                                              color: Colors.red,
-                                            ),
+                                        SizedBox(
+                                          height: 55,
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              if (overallNote.isEmpty)
+                                                InkWell(
+                                                  onTap: () {
+                                                    setModalState(() {
+                                                      showOverallNote = true;
+                                                    });
+                                                  },
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                  child: Container(
+                                                    width: 40,
+                                                    height: 40,
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            12,
+                                                          ),
+                                                      border: Border.all(
+                                                        color: Colors.deepPurple
+                                                            .withOpacity(0.2),
+                                                      ),
+                                                      color: Colors.transparent,
+                                                    ),
+                                                    child: Center(
+                                                      child: Icon(
+                                                        Icons.edit_note,
+                                                        size: 20,
+                                                        color: Colors
+                                                            .deepPurple
+                                                            .shade700,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              if (overallNote.isEmpty &&
+                                                  crossSellItems.isNotEmpty)
+                                                const SizedBox(width: 12),
+                                              if (crossSellItems.isNotEmpty)
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Text(
+                                                        "Add some add-ons:",
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                              fontSize: 11,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              color: Colors
+                                                                  .grey
+                                                                  .shade700,
+                                                            ),
+                                                      ),
+                                                      const SizedBox(height: 4),
+                                                      Expanded(
+                                                        child: ListView.builder(
+                                                          scrollDirection:
+                                                              Axis.horizontal,
+                                                          physics:
+                                                              const BouncingScrollPhysics(),
+                                                          itemCount:
+                                                              crossSellItems
+                                                                  .length,
+                                                          itemBuilder: (context, index) {
+                                                            final crossItem =
+                                                                crossSellItems[index];
+                                                            return Padding(
+                                                              padding:
+                                                                  const EdgeInsets.only(
+                                                                    right: 8,
+                                                                  ),
+                                                              child: InkWell(
+                                                                onTap: () {
+                                                                  if (crossItem
+                                                                      .variants
+                                                                      .isNotEmpty) {
+                                                                    Navigator.pop(
+                                                                      context,
+                                                                    );
+                                                                    showVariantsPopup(
+                                                                      crossItem,
+                                                                    );
+                                                                  } else {
+                                                                    _updateCart(
+                                                                      crossItem
+                                                                          .name,
+                                                                      crossItem
+                                                                          .price,
+                                                                      1,
+                                                                    );
+                                                                    setModalState(
+                                                                      () {},
+                                                                    );
+                                                                  }
+                                                                },
+                                                                borderRadius:
+                                                                    BorderRadius.circular(
+                                                                      20,
+                                                                    ),
+                                                                child: Container(
+                                                                  padding:
+                                                                      const EdgeInsets.symmetric(
+                                                                        horizontal:
+                                                                            14,
+                                                                      ),
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .center,
+                                                                  decoration: BoxDecoration(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                          20,
+                                                                        ),
+                                                                    border: Border.all(
+                                                                      color: Colors
+                                                                          .grey
+                                                                          .shade300,
+                                                                    ),
+                                                                  ),
+                                                                  child: Row(
+                                                                    mainAxisSize:
+                                                                        MainAxisSize
+                                                                            .min,
+                                                                    children: [
+                                                                      Text(
+                                                                        "${crossItem.name} • ₹${crossItem.price.toStringAsFixed(0)}",
+                                                                        style: GoogleFonts.poppins(
+                                                                          fontSize:
+                                                                              12,
+                                                                          fontWeight:
+                                                                              FontWeight.w600,
+                                                                          color:
+                                                                              Colors.black87,
+                                                                        ),
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        width:
+                                                                            6,
+                                                                      ),
+                                                                      const Icon(
+                                                                        Icons
+                                                                            .add_circle,
+                                                                        size:
+                                                                            14,
+                                                                        color: Colors
+                                                                            .deepPurple,
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            );
+                                                          },
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
                             ),
                           ],
