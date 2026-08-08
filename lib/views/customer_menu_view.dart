@@ -47,6 +47,7 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
       ""; // 🌟 FIX: Asli ID (t16...) save karne ke liye
 
   // 🌟 SECURITY VARIABLES
+  bool isTableOccupiedByOthers = false;
   bool isValidatingKey = true;
   bool isKeyValid = false;
   String? initialUrlKey;
@@ -118,10 +119,19 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
           querySnapshot.docs.first.data()['key'] == urlKey) {
         realFirebaseTableId =
             querySnapshot.docs.first.id; // 🌟 FIX: Asli ID save kar li
+
+        final tableData = querySnapshot.docs.first.data();
+        final bool docOccupied =
+            tableData['isOccupied'] == true ||
+            (tableData['kots'] != null &&
+                (tableData['kots'] as List).isNotEmpty);
+
         if (mounted)
           setState(() {
             isKeyValid = true;
             isValidatingKey = false;
+            // 🌟 NAYA: Check if table is occupied AND this device has no active orders
+            isTableOccupiedByOthers = docOccupied && placedOrders.isEmpty;
           });
         _listenToTableStatus(); // 🌟 FIX: Start listening NOW when ID is known
       } else {
@@ -491,6 +501,17 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
 
           final data = snapshot.data() as Map<String, dynamic>?;
           if (data == null) return;
+
+          // 🌟 NAYA: Real-time Occupied Check
+          final bool docOccupied =
+              data['isOccupied'] == true ||
+              (data['kots'] != null && (data['kots'] as List).isNotEmpty);
+
+          if (docOccupied && placedOrders.isEmpty) {
+            setState(() => isTableOccupiedByOthers = true);
+          } else if (!docOccupied) {
+            setState(() => isTableOccupiedByOthers = false);
+          }
 
           // Dono fields check karo: POS app wala 'isOccupied' bhi aur string 'status' bhi
           // FIX: Cooldown/Lock Logic for new customers
@@ -3754,6 +3775,54 @@ class _CustomerMenuViewState extends State<CustomerMenuView> {
                 style: GoogleFonts.poppins(fontSize: 16, color: Colors.black54),
               ),
             ],
+          ),
+        ),
+      );
+    }
+
+    // 🌟 NAYA: Occupied Table Screen
+    if (isTableOccupiedByOthers) {
+      return Scaffold(
+        backgroundColor: const Color(0xFFF8F9FE),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.orange.shade50,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.event_seat_rounded,
+                    color: Colors.orange.shade800,
+                    size: 70,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  "Table is Currently Occupied",
+                  style: GoogleFonts.poppins(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  "This table currently has active orders in progress.\nPlease ask your server for assistance or wait until the table is cleared.",
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    color: Colors.black54,
+                    height: 1.5,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       );
