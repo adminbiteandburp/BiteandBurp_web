@@ -197,7 +197,7 @@ class _SplashViewState extends State<SplashView>
                         child: Transform.scale(
                           scale: 2.3,
                           child: Image.asset(
-                            'assets/images/logo.png',
+                            'assets/images/Logo.png',
                             height: 180,
                             width: 180,
                             fit: BoxFit.contain,
@@ -475,7 +475,7 @@ class _LandingPageViewState extends State<LandingPageView> {
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: Image.asset(
-              'assets/images/logo.png',
+              'assets/images/Logo.png',
               width: 35,
               height: 35,
               errorBuilder: (c, e, s) => Container(
