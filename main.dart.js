@@ -47971,7 +47971,7 @@ this.d.X(0,new A.azp(this))},
 l(){this.d.l()
 this.aG()},
 J(a){var s,r,q,p,o,n,m,l,k,j=this,i=null,h=A.ba(a,i,t.w).w.a.a,g=h>1024,f=h>600&&h<=1024,e=h<=600,d=A.ac(12),c=A.b([new A.bY(0,B.ac,A.S(13,B.j.m()>>>16&255,B.j.m()>>>8&255,B.j.m()&255),B.i,10)],t.V),b=t.p
-c=A.aQc(A.b([new A.OC(B.Fx,A.aW(A.b([A.as(i,A.vA(A.ac(8),A.adj("assets/images/Logo.png",new A.azi(),i,36,36)),B.k,i,i,new A.aw(B.f,i,i,d,c,i,B.t),i,i,i,B.lK,i,i,i),B.cG,B.a3K],b),B.H,B.mY,B.n),i),B.qf,A.Da(i,B.Ng,new A.azj(a),i,B.a4c),A.Da(i,B.Nn,new A.azk(a),i,B.a4t),A.Da(i,B.Nr,new A.azl(a),i,B.a48),B.b8],b),B.a8,i)
+c=A.aQc(A.b([new A.OC(B.Fx,A.aW(A.b([A.as(i,A.vA(A.ac(8),A.adj("assets/images/Logo.png",new A.azi(),i,36,36)),B.k,i,i,new A.aw(B.f,i,i,d,c,i,B.t),i,i,i,B.lK,i,i,i),B.cG,B.a3K],b),B.H,B.mY,B.n),i),B.qf,A.Da(i,B.Ng,new A.azj(a),i,B.a4b),A.Da(i,B.Nn,new A.azk(a),i,B.a4s),A.Da(i,B.Nr,new A.azl(a),i,B.a47),B.b8],b),B.a8,i)
 d=j.aae(g,f)
 s=A.dv(i,A.aQA(A.eg(j.Pv(400,A.S(38,B.n1.m()>>>16&255,B.n1.m()>>>8&255,B.n1.m()&255)),i,new A.azm()),B.Uc,A.cm(6e6,0),B.TS),i,i,-100,i,-100,i)
 r=A.dv(i,A.aQA(A.eg(j.Pv(500,A.S(30,B.cU.m()>>>16&255,B.cU.m()>>>8&255,B.cU.m()&255)),i,new A.azn()),B.TP,A.cm(5e6,0),B.Ud),i,i,i,-100,400,i)
@@ -47994,7 +47994,7 @@ s=A.ba(s,j,t.w).w.a.a*0.45}else s=1/0
 r=i?B.H:B.o
 q=A.cc(A.S(102,B.h.m()>>>16&255,B.h.m()>>>8&255,B.h.m()&255),1)
 p=A.ac(30)
-p=A.Tw(A.r5(A.eg(A.as(j,B.a4p,B.k,j,j,new A.aw(A.S(20,B.h.m()>>>16&255,B.h.m()>>>8&255,B.h.m()&255),j,q,p,j,j,B.t),j,j,j,B.KM,j,j,j),j,j),j),0.3,j,j,j)
+p=A.Tw(A.r5(A.eg(A.as(j,B.a4o,B.k,j,j,new A.aw(A.S(20,B.h.m()>>>16&255,B.h.m()>>>8&255,B.h.m()&255),j,q,p,j,j,B.t),j,j,j,B.KM,j,j,j),j,j),j),0.3,j,j,j)
 q=i?B.c3:B.aP
 if(a)o=60
 else o=b?45:38
@@ -48071,7 +48071,7 @@ if(l)k=B.LG
 else k=g===1?B.LP:B.LK
 h[g]=A.cB(k,l?B.cU:B.I0,e,24)}n=A.as(e,A.aW(h,B.o,B.xZ,B.n),B.k,e,e,new A.aw(n,e,e,m,e,e,B.t),e,e,e,e,e,e,60)
 m=t.p
-l=A.b_(A.b([B.a3q,A.as(e,B.a4k,B.k,e,e,new A.aw(A.S(51,B.n0.m()>>>16&255,B.n0.m()>>>8&255,B.n0.m()&255),e,e,A.ac(20),e,e,B.t),e,e,e,B.Kz,e,e,e)],m),B.o,B.aj,B.n,0)
+l=A.b_(A.b([B.a3q,A.as(e,B.a4j,B.k,e,e,new A.aw(A.S(51,B.n0.m()>>>16&255,B.n0.m()>>>8&255,B.n0.m()&255),e,e,A.ac(20),e,e,B.t),e,e,e,B.Kz,e,e,e)],m),B.o,B.aj,B.n,0)
 k=A.b_(A.b([A.ci(f.Tw("Today's Sales","\u20b9 84,280",B.h),1,e),B.f6,A.ci(f.Tw("Active Tables","14 / 20",B.cU),1,e)],m),B.o,B.p,B.n,0)
 j=A.S(8,B.h.m()>>>16&255,B.h.m()>>>8&255,B.h.m()&255)
 i=A.ac(16)
@@ -48100,18 +48100,18 @@ r=s?300:1/0
 q=s?B.H:B.o
 p=s?B.p:B.aA
 o=t.p
-p=A.b_(A.b([A.vA(A.ac(8),A.adj("assets/images/Logo.png",new A.az0(),j,32,32)),B.f5,B.a43],o),B.o,p,B.n,0)
+p=A.b_(A.b([A.vA(A.ac(8),A.adj("assets/images/Logo.png",new A.az0(),j,32,32)),B.f5,B.a42],o),B.o,p,B.n,0)
 n=A.a2("Ankleshwar , Gujarat 393001",j,j,j,B.a1F,s?B.c3:B.aP,j)
 m=s?B.p:B.aA
 m=A.b_(A.b([B.Nm,B.bS,B.a3k],o),B.o,m,B.n,0)
 l=s?B.p:B.aA
-r=A.bG(A.aW(A.b([p,B.b8,n,B.b8,m,B.aX,A.b_(A.b([B.MY,B.bS,B.a3Z],o),B.o,l,B.n,0)],o),q,B.p,B.n),j,r)
+r=A.bG(A.aW(A.b([p,B.b8,n,B.b8,m,B.aX,A.b_(A.b([B.MY,B.bS,B.a4z],o),B.o,l,B.n,0)],o),q,B.p,B.n),j,r)
 q=s?200:1/0
 p=s?B.H:B.o
 q=A.bG(A.aW(A.b([B.a3i,B.bw,A.G8(B.a3N,new A.az1(k),j),A.G8(B.a3B,new A.az2(k),j),A.G8(B.a3H,new A.az3(k),j)],o),p,B.p,B.n),j,q)
 p=s?200:1/0
 n=s?B.H:B.o
-return A.as(j,A.aW(A.b([A.yo(B.Ec,A.b([r,q,A.bG(A.aW(A.b([B.a3S,B.bw,A.jp(B.a4u,new A.az4(k),A.jq(j,j,A.S(204,B.eM.m()>>>16&255,B.eM.m()>>>8&255,B.eM.m()&255),j,j,j,j,j,j,B.f,j,j,B.KS,j,new A.bI(A.ac(8),B.r),j,j,j,j,j))],o),n,B.p,B.n),j,p)],o),B.dt,40,60),B.dp,B.JO,B.b8,B.a4y],o),B.o,B.p,B.n),B.k,B.Il,j,j,j,j,j,new A.Z(i,60,i,60),j,j,j)}}
+return A.as(j,A.aW(A.b([A.yo(B.Ec,A.b([r,q,A.bG(A.aW(A.b([B.a3S,B.bw,A.jp(B.a4t,new A.az4(k),A.jq(j,j,A.S(204,B.eM.m()>>>16&255,B.eM.m()>>>8&255,B.eM.m()&255),j,j,j,j,j,j,B.f,j,j,B.KS,j,new A.bI(A.ac(8),B.r),j,j,j,j,j))],o),n,B.p,B.n),j,p)],o),B.dt,40,60),B.dp,B.JO,B.b8,B.a4x],o),B.o,B.p,B.n),B.k,B.Il,j,j,j,j,j,new A.Z(i,60,i,60),j,j,j)}}
 A.azp.prototype={
 $0(){var s=this.a
 return s.T(new A.azo(s))},
@@ -48232,7 +48232,7 @@ h=t.V
 i=A.b([new A.bY(j,B.ac,k,B.TG,i)],h)
 k=t.p
 j=A.b([],k)
-if(n)j.push(A.as(a0,B.a4_,B.k,a0,a0,new A.aw(a0,a0,a0,A.ac(20),A.b([new A.bY(0,B.ac,A.S(102,B.he.m()>>>16&255,B.he.m()>>>8&255,B.he.m()&255),B.nb,8)],h),B.Ol,B.t),a0,a0,B.Kn,B.lH,a0,a0,a0))
+if(n)j.push(A.as(a0,B.a3Z,B.k,a0,a0,new A.aw(a0,a0,a0,A.ac(20),A.b([new A.bY(0,B.ac,A.S(102,B.he.m()>>>16&255,B.he.m()>>>8&255,B.he.m()&255),B.nb,8)],h),B.Ol,B.t),a0,a0,B.Kn,B.lH,a0,a0,a0))
 else j.push(B.bw)
 j.push(A.a2(a.c,a0,a0,a0,A.c7(a0,a0,n?B.a5:B.L,a0,a0,a0,a0,a0,a0,a0,a0,18,a0,a0,B.aT,a0,a0,!0,a0,0.5,a0,a0,a0,a0,a0,a0),a0,a0))
 j.push(B.bw)
@@ -48313,7 +48313,7 @@ $0(){return A.iC(this.a).hN(0,"/home",null)},
 $S:0}
 A.U2.prototype={
 J(a){var s=null,r=A.qx(s,B.h,!0,s,B.f,A.d3(s,s,B.mz,s,s,new A.apc(a),s,s,s),s,s,s,B.a3g,s),q=A.ba(a,s,t.w).w.a.a<600?20:40
-return A.lG(r,B.f,A.iZ(A.cN(new A.ej(B.oX,A.aW(A.b([B.a4d,B.aX,B.DS,B.dp,new A.aN(B.bZ,A.a2("1. ACCEPTANCE OF TERMS & SCOPE",s,s,s,B.c8,s,s),s),A.a2("By accessing or using Bite & Burp POS, you agree to these Terms and Conditions. The application is intended solely for business operations, including billing, menu management, inventory control, customer management, reporting, and related business services.",s,s,s,B.c7,s,s),new A.aN(B.bZ,A.a2("2. ACCOUNT & STAFF SECURITY",s,s,s,B.c8,s,s),s),A.a2("You are responsible for maintaining the confidentiality of your account credentials, access codes, and staff PINs. Any activity performed under your business account is your responsibility. Please assign staff roles and permissions carefully.",s,s,s,B.c7,s,s),new A.aN(B.bZ,A.a2("3. DEVICE COMPATIBILITY & SYSTEM REQUIREMENTS",s,s,s,B.c8,s,s),s),A.a2("Certain features require compatible hardware, supported operating systems, internet connectivity, and device permissions. Some operating system settings may need to be enabled for features such as wireless device connectivity and printing.",s,s,s,B.c7,s,s),new A.aN(B.bZ,A.a2("4. AI-POWERED FEATURES",s,s,s,B.c8,s,s),s),A.a2("Bite & Burp POS may provide AI-assisted features to help generate menus, promotional content, or business suggestions. AI-generated content is provided for convenience only and should always be reviewed and verified before business use.",s,s,s,B.c7,s,s),new A.aN(B.bZ,A.a2("5. SUBSCRIPTION & ACTIVE DEVICES",s,s,s,B.c8,s,s),s),A.a2("Your subscription determines the number of devices or sessions that may access your business account simultaneously. Exceeding the permitted limit may automatically end or restrict additional active sessions.",s,s,s,B.c7,s,s),new A.aN(B.bZ,A.a2("6. LIMITATION OF LIABILITY",s,s,s,B.c8,s,s),s),A.a2('Bite & Burp POS is provided on an "as-is" and "as-available" basis. We are not liable for losses resulting from hardware failures, internet interruptions, incorrect user configurations, data entered by users, or business decisions made using the application. Users remain responsible for verifying financial, tax, and accounting records where required by applicable laws.',s,s,s,B.c7,s,s)],t.p),B.H,B.p,B.n),s),s,s),s,new A.Z(q,40,q,40),s,B.a2),s,s,!1,s,s)}}
+return A.lG(r,B.f,A.iZ(A.cN(new A.ej(B.oX,A.aW(A.b([B.a4c,B.aX,B.DS,B.dp,new A.aN(B.bZ,A.a2("1. ACCEPTANCE OF TERMS & SCOPE",s,s,s,B.c8,s,s),s),A.a2("By accessing or using Bite & Burp POS, you agree to these Terms and Conditions. The application is intended solely for business operations, including billing, menu management, inventory control, customer management, reporting, and related business services.",s,s,s,B.c7,s,s),new A.aN(B.bZ,A.a2("2. ACCOUNT & STAFF SECURITY",s,s,s,B.c8,s,s),s),A.a2("You are responsible for maintaining the confidentiality of your account credentials, access codes, and staff PINs. Any activity performed under your business account is your responsibility. Please assign staff roles and permissions carefully.",s,s,s,B.c7,s,s),new A.aN(B.bZ,A.a2("3. DEVICE COMPATIBILITY & SYSTEM REQUIREMENTS",s,s,s,B.c8,s,s),s),A.a2("Certain features require compatible hardware, supported operating systems, internet connectivity, and device permissions. Some operating system settings may need to be enabled for features such as wireless device connectivity and printing.",s,s,s,B.c7,s,s),new A.aN(B.bZ,A.a2("4. AI-POWERED FEATURES",s,s,s,B.c8,s,s),s),A.a2("Bite & Burp POS may provide AI-assisted features to help generate menus, promotional content, or business suggestions. AI-generated content is provided for convenience only and should always be reviewed and verified before business use.",s,s,s,B.c7,s,s),new A.aN(B.bZ,A.a2("5. SUBSCRIPTION & ACTIVE DEVICES",s,s,s,B.c8,s,s),s),A.a2("Your subscription determines the number of devices or sessions that may access your business account simultaneously. Exceeding the permitted limit may automatically end or restrict additional active sessions.",s,s,s,B.c7,s,s),new A.aN(B.bZ,A.a2("6. LIMITATION OF LIABILITY",s,s,s,B.c8,s,s),s),A.a2('Bite & Burp POS is provided on an "as-is" and "as-available" basis. We are not liable for losses resulting from hardware failures, internet interruptions, incorrect user configurations, data entered by users, or business decisions made using the application. Users remain responsible for verifying financial, tax, and accounting records where required by applicable laws.',s,s,s,B.c7,s,s)],t.p),B.H,B.p,B.n),s),s,s),s,new A.Z(q,40,q,40),s,B.a2),s,s,!1,s,s)}}
 A.apc.prototype={
 $0(){return A.iC(this.a).hN(0,"/home",null)},
 $S:0}
@@ -48352,12 +48352,12 @@ o=A.as(r,A.b_(A.b([l,B.bR,A.cB(B.ro,B.pK,r,q?90:46)],k),B.o,B.p,B.n,0),B.k,r,r,B
 n=q?40:12
 return A.lG(p,B.l8,A.iZ(A.aW(A.b([o,new A.aN(new A.Z(n,24,n,24),A.cN(new A.ej(B.Fr,q?A.b_(A.b([A.ci(s.Pz(!0),1,r),B.Yc,A.ci(s.PA(!0),1,r)],k),B.H,B.p,B.n,0):A.aW(A.b([A.bG(s.Pz(!1),r,1/0),B.Da,A.bG(s.PA(!1),r,1/0)],k),B.o,B.p,B.n),r),r,r),r),B.Uy],k),B.o,B.p,B.n),r,r,r,B.a2),r,r,!1,r,r)},
 Pz(a){var s=null,r=A.ac(20),q=A.b([new A.bY(5,B.ac,A.S(13,B.j.m()>>>16&255,B.j.m()>>>8&255,B.j.m()&255),B.eU,20)],t.V),p=t.p
-return A.as(s,A.aW(A.b([A.b_(A.b([A.as(s,B.MQ,B.k,s,s,new A.aw(B.dE,s,s,A.ac(12),s,s,B.t),s,s,s,B.lG,s,s,s),B.f6,B.L6],p),B.o,B.p,B.n,0),B.d_,A.Da(B.a8,A.as(s,B.N1,B.k,s,s,new A.aw(B.dE,s,s,A.ac(10),s,s,B.t),s,s,s,B.fR,s,s,s),s,B.a3t,B.a42),B.qe,A.Da(B.a8,A.as(s,B.N_,B.k,s,s,new A.aw(B.kX,s,s,A.ac(10),s,s,B.t),s,s,s,B.fR,s,s,s),s,B.a3C,B.a3V),B.qe,A.Da(B.a8,A.as(s,B.Mz,B.k,s,s,new A.aw(B.q0,s,s,A.ac(10),s,s,B.t),s,s,s,B.fR,s,s,s),s,B.a3s,B.a40)],p),B.H,B.p,B.n),B.k,s,s,new A.aw(B.f,s,s,r,q,s,B.t),s,s,s,B.qx,s,s,s)},
+return A.as(s,A.aW(A.b([A.b_(A.b([A.as(s,B.MQ,B.k,s,s,new A.aw(B.dE,s,s,A.ac(12),s,s,B.t),s,s,s,B.lG,s,s,s),B.f6,B.L6],p),B.o,B.p,B.n,0),B.d_,A.Da(B.a8,A.as(s,B.N1,B.k,s,s,new A.aw(B.dE,s,s,A.ac(10),s,s,B.t),s,s,s,B.fR,s,s,s),s,B.a3t,B.a41),B.qe,A.Da(B.a8,A.as(s,B.N_,B.k,s,s,new A.aw(B.kX,s,s,A.ac(10),s,s,B.t),s,s,s,B.fR,s,s,s),s,B.a3C,B.a3V),B.qe,A.Da(B.a8,A.as(s,B.Mz,B.k,s,s,new A.aw(B.q0,s,s,A.ac(10),s,s,B.t),s,s,s,B.fR,s,s,s),s,B.a3s,B.a4_)],p),B.H,B.p,B.n),B.k,s,s,new A.aw(B.f,s,s,r,q,s,B.t),s,s,s,B.qx,s,s,s)},
 PA(a){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e=this,d=null
 if(e.y){s=a?40:16
 r=A.ac(16)
 q=A.cc(B.pZ,2)
-return A.as(d,A.aW(A.b([B.MC,B.b8,B.a4w,B.aX,B.a4f,B.d_,A.jp(B.a47,new A.axO(e),d)],t.p),B.o,B.p,B.n),B.k,d,d,new A.aw(B.f,d,q,r,d,d,B.t),d,d,d,new A.Z(s,s,s,s),d,d,d)}s=a?32:16
+return A.as(d,A.aW(A.b([B.MC,B.b8,B.a4v,B.aX,B.a4e,B.d_,A.jp(B.a46,new A.axO(e),d)],t.p),B.o,B.p,B.n),B.k,d,d,new A.aw(B.f,d,q,r,d,d,B.t),d,d,d,new A.Z(s,s,s,s),d,d,d)}s=a?32:16
 r=A.ac(16)
 q=A.b([new A.bY(0,B.ac,A.S(10,B.j.m()>>>16&255,B.j.m()>>>8&255,B.j.m()&255),B.cV,20)],t.V)
 p=t.p
@@ -48365,7 +48365,7 @@ o=A.b_(A.b([A.as(d,B.ML,B.k,d,d,new A.aw(B.I9,d,d,A.ac(10),d,d,B.t),d,d,d,B.fR,d
 n=A.apj(e.e,A.iH(d,new A.dY(4,A.ac(10),B.fm),d,d,d,d,d,d,!0,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,"App User ID / Restaurant ID",!0,!0,!1,d,B.Nf,d,d,d,d,d,d,d,d,d,d,d,d),1,new A.axP())
 m=A.apj(e.f,A.iH(d,new A.dY(4,A.ac(10),B.fm),d,d,d,d,d,d,!0,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,"Registered Email",!0,!0,!1,d,B.Nd,d,d,d,d,d,d,d,d,d,d,d,d),1,new A.axQ())
 l=A.apj(e.r,A.iH(d,new A.dY(4,A.ac(10),B.fm),d,d,d,d,d,d,!0,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,"Phone Number",!0,!0,!1,d,B.Nk,d,d,d,d,d,d,d,d,d,d,d,d),1,new A.axR())
-k=A.yo(B.ds,A.b([A.aJf(B.a3F,new A.axS(e)),A.aJf(B.a4z,new A.axT(e)),A.aJf(B.a4o,new A.axU(e))],p),B.dt,8,8)
+k=A.yo(B.ds,A.b([A.aJf(B.a3F,new A.axS(e)),A.aJf(B.a4y,new A.axT(e)),A.aJf(B.a4n,new A.axU(e))],p),B.dt,8,8)
 j=A.apj(e.w,A.iH(!0,new A.dY(4,A.ac(10),B.fm),d,d,d,d,d,d,!0,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,"Detailed Reason / Comments",!0,!0,!1,d,B.UB,d,d,d,d,d,d,d,d,d,d,d,d),4,new A.axV())
 i=A.ac(8)
 h=A.jq(d,d,B.w,d,d,d,d,d,d,B.f,d,d,d,B.w,new A.bI(A.ac(8),B.r),d,d,d,d,d)
@@ -48436,7 +48436,7 @@ n=A.ba(a,o,n).w
 s=t.N
 r=t.K
 q=A.b([A.Y(["t","Contactless QR Menu","d",u.C,"i",B.rf,"c",B.fx],s,r),A.Y(["t","Captain Waiter Pad","d",u.B,"i",B.rh,"c",B.eM],s,r),A.Y(["t","Smart Inventory","d",u.A,"i",B.rj,"c",B.lk],s,r),A.Y(["t","Live Cashbook","d",u.Z,"i",B.rb,"c",B.h],s,r),A.Y(["t","Offline Resilience","d",u.y,"i",B.ri,"c",B.pH],s,r)],t.Mq)
-r=A.qx(o,B.f,o,0,o,A.d3(o,o,B.Ns,o,o,new A.aaQ(a),o,o,o),o,o,o,B.a4g,o)
+r=A.qx(o,B.f,o,0,o,A.d3(o,o,B.Ns,o,o,new A.aaQ(a),o,o,o),o,o,o,B.a4f,o)
 s=m?80:20
 p=t.dH
 n=A.V(new A.a4(q,new A.aaR(n.a.a<=600,l),p),p.i("ap.E"))
@@ -48807,9 +48807,9 @@ for(s=n.k2,r=0;r<5;++r){q=r<s
 p=q?B.rw:B.rv
 k[r]=A.fX(m,A.cB(p,q?B.yb:B.bP,m,55),B.a_,!1,m,m,m,m,m,m,m,m,m,m,m,m,m,m,new A.auu(n,r),m,m,m,m,m,m)}s=A.b_(k,B.o,B.aj,B.n,0)
 q=t.p
-p=A.b_(A.b([B.a4h,A.aS_(B.MJ,B.a3O,n.gadM(),A.aL7(m,m,m,m,m,m,m,m,m,B.h,m,m,m,m,m,m,m,m,m,m))],q),B.o,B.aj,B.n,0)
+p=A.b_(A.b([B.a4g,A.aS_(B.MJ,B.a3O,n.gadM(),A.aL7(m,m,m,m,m,m,m,m,m,B.h,m,m,m,m,m,m,m,m,m,m))],q),B.o,B.aj,B.n,0)
 o=A.S(5,B.j.m()>>>16&255,B.j.m()>>>8&255,B.j.m()&255)
-return A.aRO(A.eg(A.iZ(A.aW(A.b([B.dp,l,B.b8,B.a4q,B.dp,s,B.dp,p,B.bw,A.nq(m,B.bG,!1,m,!0,B.E,m,A.qo(),n.k3,m,m,m,m,m,2,A.iH(m,new A.dY(4,A.ac(20),B.r),m,m,m,m,m,m,!0,m,m,m,m,m,m,o,!0,m,m,m,m,m,m,m,m,m,m,m,m,m,m,"Tell us what you liked...",m,m,m,m,m,m,m,m,m,!0,!0,!1,m,m,m,m,m,m,m,m,m,m,m,m,m,m),B.a_,!0,m,!0,m,!1,m,B.by,m,m,m,m,m,m,m,m,5,m,m,!1,"\u2022",m,m,m,m,m,!1,m,m,!1,m,!0,m,B.aD,m,m,m,m,m,m,m,m,m,m,m,m,!0,B.ar,m,B.co,m,m,m,m),B.d_,A.bG(A.jp(B.a3A,new A.auv(n),A.jq(m,m,B.h,m,m,m,m,m,m,m,m,m,m,m,new A.bI(A.ac(15),B.r),m,m,m,m,m)),60,1/0)],q),B.H,B.p,B.n),m,B.KV,m,B.a2),m,m),0.1)},
+return A.aRO(A.eg(A.iZ(A.aW(A.b([B.dp,l,B.b8,B.a4p,B.dp,s,B.dp,p,B.bw,A.nq(m,B.bG,!1,m,!0,B.E,m,A.qo(),n.k3,m,m,m,m,m,2,A.iH(m,new A.dY(4,A.ac(20),B.r),m,m,m,m,m,m,!0,m,m,m,m,m,m,o,!0,m,m,m,m,m,m,m,m,m,m,m,m,m,m,"Tell us what you liked...",m,m,m,m,m,m,m,m,m,!0,!0,!1,m,m,m,m,m,m,m,m,m,m,m,m,m,m),B.a_,!0,m,!0,m,!1,m,B.by,m,m,m,m,m,m,m,m,5,m,m,!1,"\u2022",m,m,m,m,m,!1,m,m,!1,m,!0,m,B.aD,m,m,m,m,m,m,m,m,m,m,m,m,!0,B.ar,m,B.co,m,m,m,m),B.d_,A.bG(A.jp(B.a3A,new A.auv(n),A.jq(m,m,B.h,m,m,m,m,m,m,m,m,m,m,m,new A.bI(A.ac(15),B.r),m,m,m,m,m)),60,1/0)],q),B.H,B.p,B.n),m,B.KV,m,B.a2),m,m),0.1)},
 aai(){var s,r,q,p=this,o=null,n=p.gate(),m=p.cy,l=A.a5(m).i("b2<1>"),k=A.V(new A.b2(m,new A.au7(p),l),l.i("p.E"))
 for(m=p.cy,l=m.length,s=0;s<m.length;m.length===l||(0,A.x)(m),++s){r=m[s]
 p.dx.n(0,r.b,r.c)}m=A.ac(30)
@@ -48820,10 +48820,10 @@ if(k.length===0)q=B.GY
 else{q=p.glV()>0?100:20
 q=A.rI(!0,3000,new A.aua(p,n,k),n.length,new A.Z(0,0,0,q),B.dc,B.a2,!1)}return A.r5(A.eg(A.aW(A.b([new A.aN(B.qt,l,o),m,A.ci(q,1,o)],t.p),B.o,B.p,B.n),o,o),o)},
 aan(){var s=null,r=this.go.length
-if(r===0)return A.r5(A.eg(A.cN(A.aW(A.b([A.aKR(A.eg(A.cB(B.ru,A.S(50,B.h.m()>>>16&255,B.h.m()>>>8&255,B.h.m()&255),s,80),s,s),s,A.cm(5e5,0)),B.b8,B.a44,B.aX,B.a3M,B.d_,A.jp(B.a3x,new A.aud(this),A.jq(s,s,B.h,s,s,s,s,s,s,s,s,s,B.KX,s,new A.bI(A.ac(12),B.r),s,s,s,s,s))],t.p),B.o,B.aA,B.n),s,s),s,s),s)
+if(r===0)return A.r5(A.eg(A.cN(A.aW(A.b([A.aKR(A.eg(A.cB(B.ru,A.S(50,B.h.m()>>>16&255,B.h.m()>>>8&255,B.h.m()&255),s,80),s,s),s,A.cm(5e5,0)),B.b8,B.a43,B.aX,B.a3M,B.d_,A.jp(B.a3x,new A.aud(this),A.jq(s,s,B.h,s,s,s,s,s,s,s,s,s,B.KX,s,new A.bI(A.ac(12),B.r),s,s,s,s,s))],t.p),B.o,B.aA,B.n),s,s),s,s),s)
 return A.rI(!0,s,new A.aue(this),r,B.aD,s,B.a2,!1)},
 aat(){var s,r,q,p=this,o=null
-if(p.go.length===0)return A.r5(A.eg(A.cN(A.aW(A.b([A.aKR(A.eg(A.cB(B.mu,A.S(50,B.h.m()>>>16&255,B.h.m()>>>8&255,B.h.m()&255),o,80),o,o),o,A.cm(5e5,0)),B.b8,B.a4s,B.aX,B.a3p],t.p),B.o,B.aA,B.n),o,o),o,o),o)
+if(p.go.length===0)return A.r5(A.eg(A.cN(A.aW(A.b([A.aKR(A.eg(A.cB(B.mu,A.S(50,B.h.m()>>>16&255,B.h.m()>>>8&255,B.h.m()&255),o,80),o,o),o,A.cm(5e5,0)),B.b8,B.a4r,B.aX,B.a3p],t.p),B.o,B.aA,B.n),o,o),o,o),o)
 s=A.ac(30)
 s=A.ci(A.iZ(A.as(o,new A.de(new A.auj(p),o),B.k,o,o,new A.aw(B.f,o,A.cc(A.S(15,B.j.m()>>>16&255,B.j.m()>>>8&255,B.j.m()&255),1),s,A.b([new A.bY(0,B.ac,A.S(10,B.j.m()>>>16&255,B.j.m()>>>8&255,B.j.m()&255),B.cV,30)],t.V),o,B.t),o,o,o,B.qv,o,o,o),o,o,o,B.a2),1,o)
 r=p.id
@@ -49143,7 +49143,7 @@ if(k.length!==0)B.b.O(r,A.b([B.aX,A.a2(k,o,o,o,B.a0Z,o,o)],q))
 r.push(B.d_)
 l=m.a?o:new A.avG(m,p.b,l,s,b,p.e)
 k=A.jq(o,o,B.h,o,o,o,o,o,o,o,o,o,o,o,new A.bI(A.ac(15),B.r),o,o,o,o,o)
-r.push(A.bG(A.jp(m.a?B.H0:B.a4n,l,k),55,1/0))
+r.push(A.bG(A.jp(m.a?B.H0:B.a4m,l,k),55,1/0))
 r.push(B.e3)
 return new A.aN(new A.Z(25,30,25,n.f.d),A.aW(r,B.H,B.p,B.aa),o)},
 $S:99}
@@ -49208,7 +49208,7 @@ s.e=s.f=2},
 $S:0}
 A.avA.prototype={
 $1(a){var s=null,r=A.ac(20)
-return new A.v3(A.aW(A.b([A.aKR(A.eg(B.MF,s,s),B.Jd,A.cm(4e5,0)),B.b8,B.a3U,B.aX,B.a49,B.d_,A.bG(A.jp(B.a4a,new A.avu(a),A.jq(s,s,B.h,s,s,s,s,s,s,s,s,s,s,s,new A.bI(A.ac(12),B.r),s,s,s,s,s)),50,1/0)],t.p),B.o,B.p,B.aa),B.qx,new A.bI(r,B.r),s)},
+return new A.v3(A.aW(A.b([A.aKR(A.eg(B.MF,s,s),B.Jd,A.cm(4e5,0)),B.b8,B.a3U,B.aX,B.a48,B.d_,A.bG(A.jp(B.a49,new A.avu(a),A.jq(s,s,B.h,s,s,s,s,s,s,s,s,s,s,s,new A.bI(A.ac(12),B.r),s,s,s,s,s)),50,1/0)],t.p),B.o,B.p,B.aa),B.qx,new A.bI(r,B.r),s)},
 $S:333}
 A.avu.prototype={
 $0(){A.da(this.a,!1).dS(null)
@@ -49239,7 +49239,7 @@ o=A.tT(new A.avr(s,b),A.fm(o,o.gdj().cq("restaurants")).cO(s.a.c).hQ(),t.Pi)
 m=A.ac(20)
 l=A.b([new A.bY(0,B.ac,A.S(80,B.h.m()>>>16&255,B.h.m()>>>8&255,B.h.m()&255),B.eU,15)],t.V)
 k=A.jq(j,j,B.h,j,j,j,0,j,j,j,j,j,B.KT,j,new A.bI(A.ac(20),B.r),j,j,j,j,j)
-return new A.aN(new A.Z(0,0,0,h.f.d),A.as(j,A.aW(A.b([q,B.JM,p,B.JP,o,B.cn,A.as(j,A.jp(A.b_(A.b([A.aW(A.b([B.a4x,A.a2("\u20b9"+A.l(s.glV()),j,j,j,B.hD,j,j)],r),B.H,B.p,B.aa),B.We],r),B.o,B.aj,B.n,0),s.galp(),k),B.k,j,j,new A.aw(j,j,j,m,l,j,B.t),j,j,j,j,j,j,j)],r),B.H,B.p,B.n),B.k,j,j,j,j,i.a.b*0.75,j,B.qu,j,j,j),j)},
+return new A.aN(new A.Z(0,0,0,h.f.d),A.as(j,A.aW(A.b([q,B.JM,p,B.JP,o,B.cn,A.as(j,A.jp(A.b_(A.b([A.aW(A.b([B.a4w,A.a2("\u20b9"+A.l(s.glV()),j,j,j,B.hD,j,j)],r),B.H,B.p,B.aa),B.We],r),B.o,B.aj,B.n,0),s.galp(),k),B.k,j,j,new A.aw(j,j,j,m,l,j,B.t),j,j,j,j,j,j,j)],r),B.H,B.p,B.n),B.k,j,j,j,j,i.a.b*0.75,j,B.qu,j,j,j),j)},
 $S:99}
 A.avp.prototype={
 $0(){var s=this.a
@@ -100119,7 +100119,7 @@ A.a0m.prototype={}
 A.w8.prototype={
 J(a){var s=null,r=this.c
 r=r==null?s:"GoException: "+r.a
-return A.tz(!0,A.cN(A.aW(A.b([B.a41,B.D9,A.a2(r==null?"page not found":r,s,s,s,s,s,s),B.D9,new A.Hc(new A.aap(a),B.a3I,s)],t.p),B.o,B.aA,B.n),s,s),B.a8,!0)}}
+return A.tz(!0,A.cN(A.aW(A.b([B.a40,B.D9,A.a2(r==null?"page not found":r,s,s,s,s,s,s),B.D9,new A.Hc(new A.aap(a),B.a3I,s)],t.p),B.o,B.aA,B.n),s,s),B.a8,!0)}}
 A.aap.prototype={
 $0(){return A.iC(this.a).hN(0,"/",null)},
 $S:0}
@@ -100170,7 +100170,7 @@ A.wG.prototype={
 J(a){var s=null,r=A.qx(s,s,s,s,s,s,s,s,s,B.a3n,s),q=this.c
 q=q==null?s:"GoException: "+q.a
 if(q==null)q="page not found"
-return A.lG(r,s,A.cN(A.aW(A.b([new A.Ff(q,s),A.G8(B.a46,new A.agZ(a),s)],t.p),B.o,B.aA,B.n),s,s),s,s,!1,s,s)}}
+return A.lG(r,s,A.cN(A.aW(A.b([new A.Ff(q,s),A.G8(B.a45,new A.agZ(a),s)],t.p),B.o,B.aA,B.n),s,s),s,s,!1,s,s)}}
 A.agZ.prototype={
 $0(){return A.iC(this.a).hN(0,"/",null)},
 $S:0}
@@ -104650,8 +104650,8 @@ B.e=new A.NG(0,"sRGB")
 B.fC=new A.o(0.45098039215686275,0,0,0,B.e)
 B.O=new A.fy(700)
 B.a26=new A.m(!0,B.fC,null,null,null,null,13,B.O,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.a4e=new A.aO("Items Ordered",null,B.a26,null,null,null,null,null,null)
-B.EF=new A.dU(B.ef,null,null,B.a4e,null)
+B.a4d=new A.aO("Items Ordered",null,B.a26,null,null,null,null,null,null)
+B.EF=new A.dU(B.ef,null,null,B.a4d,null)
 B.EG=new A.fT(0,1)
 B.EH=new A.fT(0,-1)
 B.hN=new A.fT(1,0)
@@ -105107,8 +105107,8 @@ B.a85=new A.ar7(0,"material")
 B.H2=new A.qK(null,null,null)
 B.kQ=new A.jj(B.a1,null,null,B.H2,null)
 B.DL=new A.m(!0,B.fC,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.a4m=new A.aO("No items found",null,B.DL,null,null,null,null,null,null)
-B.GY=new A.jj(B.a1,null,null,B.a4m,null)
+B.a4l=new A.aO("No items found",null,B.DL,null,null,null,null,null,null)
+B.GY=new A.jj(B.a1,null,null,B.a4l,null)
 B.mv=new A.aM(983304,"MaterialIcons",null,!1)
 B.Ni=new A.aV(B.mv,38,B.be,null,null)
 B.kR=new A.jj(B.a1,null,null,B.Ni,null)
@@ -105565,11 +105565,11 @@ B.n=new A.Qp(1,"max")
 B.bL=new A.aqx(1,"down")
 B.I=new A.fy(900)
 B.DM=new A.m(!0,null,null,null,null,null,22,B.I,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.a4j=new A.aO("Get Support",null,B.DM,null,null,null,null,null,null)
+B.a4i=new A.aO("Get Support",null,B.DM,null,null,null,null,null,null)
 B.hx=new A.cw(null,4,null,null)
 B.o5=new A.m(!0,B.L,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.a4r=new A.aO("Our dedicated support team is available to help you.",null,B.o5,null,null,null,null,null,null)
-B.R3=s([B.a4j,B.hx,B.a4r],t.p)
+B.a4q=new A.aO("Our dedicated support team is available to help you.",null,B.o5,null,null,null,null,null,null)
+B.R3=s([B.a4i,B.hx,B.a4q],t.p)
 B.Ja=new A.qO(B.a2,B.p,B.n,B.H,null,B.bL,null,0,B.R3,null)
 B.L6=new A.lg(1,B.iE,B.Ja,null)
 B.a13=new A.m(!0,null,null,null,null,null,22,B.O,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
@@ -107257,16 +107257,16 @@ B.Uv=new A.DU(null)
 B.Uw=new A.R9(0,"nearestOverlay")
 B.Ux=new A.R9(1,"rootOverlay")
 B.Kt=new A.Z(0,24,0,24)
-B.a4v=new A.aO("\xa9 2025 Bite & Burp POS. All rights reserved.",null,B.DL,null,null,null,null,null,null)
-B.Uy=new A.aN(B.Kt,B.a4v,null)
+B.a4u=new A.aO("\xa9 2025 Bite & Burp POS. All rights reserved.",null,B.DL,null,null,null,null,null,null)
+B.Uy=new A.aN(B.Kt,B.a4u,null)
 B.Ky=new A.Z(10,0,10,0)
 B.Ml=new A.aM(983469,"MaterialIcons",null,!1)
 B.Nj=new A.aV(B.Ml,18,B.bY,null,null)
 B.Uz=new A.aN(B.Ky,B.Nj,null)
 B.KY=new A.Z(40,0,40,0)
 B.a_F=new A.m(!0,B.h,null,null,null,null,24,B.I,null,2,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.a4i=new A.aO("BITE & BURP POS",null,B.a_F,null,null,null,null,null,null)
-B.UA=new A.aN(B.KY,B.a4i,null)
+B.a4h=new A.aO("BITE & BURP POS",null,B.a_F,null,null,null,null,null,null)
+B.UA=new A.aN(B.KY,B.a4h,null)
 B.Ko=new A.Z(0,0,0,60)
 B.M6=new A.aM(63023,"MaterialIcons",null,!1)
 B.MK=new A.aV(B.M6,null,null,null,null)
@@ -107364,11 +107364,11 @@ B.f3=new A.xn(1,"doNotPop")
 B.Cj=new A.xn(2,"bubble")
 B.ju=new A.i8(null,null)
 B.hE=new A.m(!0,B.f,null,null,null,null,16,B.I,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.a45=new A.aO("View Cart",null,B.hE,null,null,null,null,null,null)
+B.a44=new A.aO("View Cart",null,B.hE,null,null,null,null,null,null)
 B.bS=new A.cw(8,null,null,null)
 B.Mk=new A.aM(983407,"MaterialIcons",null,!1)
 B.rz=new A.aV(B.Mk,18,B.f,null,null)
-B.Py=s([B.a45,B.bS,B.rz],t.p)
+B.Py=s([B.a44,B.bS,B.rz],t.p)
 B.W9=new A.kx(B.af,B.p,B.n,B.o,null,B.bL,null,0,B.Py,null)
 B.a1_=new A.m(!0,B.f,null,null,null,null,14,B.I,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.a3D=new A.aO("VIEW CART",null,B.a1_,null,null,null,null,null,null)
@@ -107393,8 +107393,8 @@ B.We=new A.kx(B.af,B.p,B.n,B.o,null,B.bL,null,0,B.PS,null)
 B.Mj=new A.aM(983367,"MaterialIcons",null,!0)
 B.MZ=new A.aV(B.Mj,18,B.f,null,null)
 B.o8=new A.m(!0,null,null,null,null,null,16,B.O,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.a4l=new A.aO("Send Request",null,B.o8,null,null,null,null,null,null)
-B.P9=s([B.MZ,B.bS,B.a4l],t.p)
+B.a4k=new A.aO("Send Request",null,B.o8,null,null,null,null,null,null)
+B.P9=s([B.MZ,B.bS,B.a4k],t.p)
 B.Wf=new A.kx(B.af,B.aA,B.n,B.o,null,B.bL,null,0,B.P9,null)
 B.Wg=new A.F0(1333)
 B.nn=new A.F0(2222)
@@ -107662,8 +107662,8 @@ B.Wa=new A.kx(B.af,B.p,B.n,B.o,null,B.bL,null,0,B.QX,null)
 B.Yn=new A.jJ(B.Wa,B.h,null,null,null,null,null,null,B.hy,null,null,null,null,B.dH,!1,null,null,null,B.E,null)
 B.a3z=new A.aO("Bill Requested! Please proceed to the counter to pay your bill.",null,null,null,null,null,null,null,null)
 B.Yo=new A.jJ(B.a3z,B.U,null,null,null,null,null,null,B.hy,null,null,null,null,B.dH,!1,null,null,null,B.E,null)
-B.a4b=new A.aO("Session ended. Thank you for dining!",null,null,null,null,null,null,null,null)
-B.Yp=new A.jJ(B.a4b,B.eM,null,null,null,null,null,null,B.hy,null,null,null,null,B.dH,!1,null,null,null,B.E,null)
+B.a4a=new A.aO("Session ended. Thank you for dining!",null,null,null,null,null,null,null,null)
+B.Yp=new A.jJ(B.a4a,B.eM,null,null,null,null,null,null,B.hy,null,null,null,null,B.dH,!1,null,null,null,B.E,null)
 B.a3r=new A.aO("Review Copied! Opening Google Maps...",null,null,null,null,null,null,null,null)
 B.Yq=new A.jJ(B.a3r,null,null,null,null,null,null,null,null,null,null,null,null,B.dH,!1,null,null,null,B.E,null)
 B.Dg=new A.FG(0,"permissive")
@@ -108125,47 +108125,47 @@ B.Zu=new A.m(!0,B.L,null,null,null,null,15,B.a6,null,null,null,null,null,null,nu
 B.a3X=new A.aO("Total Orders Placed",null,B.Zu,null,null,null,null,null,null)
 B.a0j=new A.m(!0,B.j,null,null,null,null,45,B.I,null,null,null,null,1.1,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.DW=new A.aO("Everything you need.\nZero chaos.",null,B.a0j,B.aP,null,null,null,null,null)
-B.a3Z=new A.aO("support@biteandburp.com",null,B.DI,null,null,null,null,null,null)
 B.a2Y=new A.m(!0,B.f,null,null,null,null,10,B.I,null,1.2,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.a4_=new A.aO("MOST POPULAR \ud83d\udd25",null,B.a2Y,null,null,null,null,null,null)
-B.a40=new A.aO("Secure & Reliable",null,B.c6,null,null,null,null,null,null)
-B.a41=new A.aO("Page Not Found",null,B.c6,null,null,null,null,null,null)
-B.a42=new A.aO("Email Us",null,B.c6,null,null,null,null,null,null)
+B.a3Z=new A.aO("MOST POPULAR \ud83d\udd25",null,B.a2Y,null,null,null,null,null,null)
+B.a4_=new A.aO("Secure & Reliable",null,B.c6,null,null,null,null,null,null)
+B.a40=new A.aO("Page Not Found",null,B.c6,null,null,null,null,null,null)
+B.a41=new A.aO("Email Us",null,B.c6,null,null,null,null,null,null)
 B.a_D=new A.m(!0,B.f,null,null,null,null,20,B.I,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.a43=new A.aO("BITE & BURP POS",null,B.a_D,null,null,null,null,null,null)
+B.a42=new A.aO("BITE & BURP POS",null,B.a_D,null,null,null,null,null,null)
 B.DK=new A.m(!0,B.A,null,null,null,null,22,B.I,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.a44=new A.aO("No Orders Yet",null,B.DK,null,null,null,null,null,null)
-B.a46=new A.aO("Home",null,null,null,null,null,null,null,null)
-B.a47=new A.aO("Submit Another Request",null,null,null,null,null,null,null,null)
+B.a43=new A.aO("No Orders Yet",null,B.DK,null,null,null,null,null,null)
+B.a45=new A.aO("Home",null,null,null,null,null,null,null,null)
+B.a46=new A.aO("Submit Another Request",null,null,null,null,null,null,null,null)
 B.o2=new A.m(!0,null,null,null,null,null,null,B.a6,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.a48=new A.aO("Help & Support",null,B.o2,null,null,null,null,null,null)
-B.a49=new A.aO("Sent to the kitchen. Track in the Orders tab.",null,B.o7,B.aP,null,null,null,null,null)
-B.a4a=new A.aO("Continue",null,B.k0,null,null,null,null,null,null)
-B.a4c=new A.aO("App Features",null,B.o2,null,null,null,null,null,null)
-B.a4d=new A.aO("Terms & Conditions",null,B.DQ,null,null,null,null,null,null)
-B.a4f=new A.aO("Your request has been forwarded to our support team. We will process it within 24-48 hours.",null,B.o5,B.aP,null,null,null,null,null)
+B.a47=new A.aO("Help & Support",null,B.o2,null,null,null,null,null,null)
+B.a48=new A.aO("Sent to the kitchen. Track in the Orders tab.",null,B.o7,B.aP,null,null,null,null,null)
+B.a49=new A.aO("Continue",null,B.k0,null,null,null,null,null,null)
+B.a4b=new A.aO("App Features",null,B.o2,null,null,null,null,null,null)
+B.a4c=new A.aO("Terms & Conditions",null,B.DQ,null,null,null,null,null,null)
+B.a4e=new A.aO("Your request has been forwarded to our support team. We will process it within 24-48 hours.",null,B.o5,B.aP,null,null,null,null,null)
 B.ZS=new A.m(!0,B.j,null,null,null,null,null,B.O,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.a4g=new A.aO("App Features",null,B.ZS,null,null,null,null,null,null)
+B.a4f=new A.aO("App Features",null,B.ZS,null,null,null,null,null,null)
 B.a06=new A.m(!0,null,null,null,null,null,18,B.I,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.a4h=new A.aO("Your Review",null,B.a06,null,null,null,null,null,null)
+B.a4g=new A.aO("Your Review",null,B.a06,null,null,null,null,null,null)
 B.ZT=new A.m(!0,B.U,null,null,null,null,12,B.O,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.a4k=new A.aO("Online",null,B.ZT,null,null,null,null,null,null)
-B.a4n=new A.aO("Confirm & Place Order",null,B.hE,null,null,null,null,null,null)
-B.a4o=new A.aO("Custom / Other",null,null,null,null,null,null,null,null)
+B.a4j=new A.aO("Online",null,B.ZT,null,null,null,null,null,null)
+B.a4m=new A.aO("Confirm & Place Order",null,B.hE,null,null,null,null,null,null)
+B.a4n=new A.aO("Custom / Other",null,null,null,null,null,null,null,null)
 B.a08=new A.m(!0,B.h,null,null,null,null,11,B.I,null,1.5,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.a4p=new A.aO("\u2728 THE NEXT-GEN RESTAURANT OS",null,B.a08,null,null,null,null,null,null)
+B.a4o=new A.aO("\u2728 THE NEXT-GEN RESTAURANT OS",null,B.a08,null,null,null,null,null,null)
 B.a_B=new A.m(!0,null,null,null,null,null,32,B.I,null,null,null,null,1.1,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.a4q=new A.aO("How was your\nmeal today?",null,B.a_B,null,null,null,null,null,null)
-B.a4s=new A.aO("No Bill Generated",null,B.DK,null,null,null,null,null,null)
-B.a4t=new A.aO("Privacy Policy",null,B.o2,null,null,null,null,null,null)
-B.a4u=new A.aO("Take a free demo",null,B.c6,null,null,null,null,null,null)
+B.a4p=new A.aO("How was your\nmeal today?",null,B.a_B,null,null,null,null,null,null)
+B.a4r=new A.aO("No Bill Generated",null,B.DK,null,null,null,null,null,null)
+B.a4s=new A.aO("Privacy Policy",null,B.o2,null,null,null,null,null,null)
+B.a4t=new A.aO("Take a free demo",null,B.c6,null,null,null,null,null,null)
 B.a12=new A.m(!0,null,null,null,null,null,24,B.O,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.a4w=new A.aO("Request Submitted",null,B.a12,null,null,null,null,null,null)
+B.a4v=new A.aO("Request Submitted",null,B.a12,null,null,null,null,null,null)
 B.a1K=new A.m(!0,B.a5,null,null,null,null,12,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.a4x=new A.aO("Total",null,B.a1K,null,null,null,null,null,null)
+B.a4w=new A.aO("Total",null,B.a1K,null,null,null,null,null,null)
 B.a_i=new A.m(!0,B.pV,null,null,null,null,12,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.a4y=new A.aO("\xa9 2026 Bite and burp PVT LTD All rights reserved.",null,B.a_i,B.aP,null,null,null,null,null)
-B.a4z=new A.aO("Subscription Request",null,null,null,null,null,null,null,null)
+B.a4x=new A.aO("\xa9 2026 Bite and burp PVT LTD All rights reserved.",null,B.a_i,B.aP,null,null,null,null,null)
+B.a4y=new A.aO("Subscription Request",null,null,null,null,null,null,null,null)
+B.a4z=new A.aO("biteandburpsupport@gmail.com",null,B.DI,null,null,null,null,null,null)
 B.a84=new A.apY(0,"system")
 B.U1=new A.i(0.056,0.024)
 B.Uk=new A.i(0.108,0.3085)
