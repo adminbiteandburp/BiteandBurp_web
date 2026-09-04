@@ -1780,7 +1780,7 @@ class _LandingPageViewState extends State<LandingPageView> {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      "Address",
+                      "Ankleshwar , Gujarat 393001",
                       textAlign: isDesktop ? TextAlign.left : TextAlign.center,
                       style: const TextStyle(
                         color: Colors.white70,
