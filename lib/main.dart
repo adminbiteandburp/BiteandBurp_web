@@ -2163,12 +2163,12 @@ class _HelpSupportViewState extends State<HelpSupportView> {
             defaultTargetPlatform == TargetPlatform.macOS ||
             defaultTargetPlatform == TargetPlatform.linux)) {
       html.window.open(
-        'https://mail.google.com/mail/?view=cm&fs=1&to=support@biteandburp.com&su=$encodedSubject&body=$encodedBody',
+        'https://mail.google.com/mail/?view=cm&fs=1&to=biteandburpsupport@gmail.com&su=$encodedSubject&body=$encodedBody',
         '_blank',
       );
     } else {
       html.window.open(
-        'mailto:support@biteandburp.com?subject=$encodedSubject&body=$encodedBody',
+        'mailto:biteandburpsupport@gmail.com?subject=$encodedSubject&body=$encodedBody',
         '_blank',
       );
     }
@@ -2371,7 +2371,7 @@ class _HelpSupportViewState extends State<HelpSupportView> {
               "Email Us",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            subtitle: const Text("support@biteandburp.com"),
+            subtitle: const Text("biteandburpsupport@gmail.com"),
           ),
           const Divider(height: 20),
           ListTile(
