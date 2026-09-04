@@ -1815,7 +1815,7 @@ class _LandingPageViewState extends State<LandingPageView> {
                         ),
                         const SizedBox(width: 8),
                         const Text(
-                          "support@biteandburp.com",
+                          "biteandburpsupport@gmail.com",
                           style: TextStyle(color: Colors.white70, fontSize: 14),
                         ),
                       ],
