@@ -2388,7 +2388,7 @@ class _HelpSupportViewState extends State<HelpSupportView> {
               "Quick Response",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            subtitle: const Text("We respond within 1-2 hours"),
+            subtitle: const Text("We will get back to you as soon as possible"),
           ),
           const Divider(height: 20),
           ListTile(
