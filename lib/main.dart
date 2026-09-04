@@ -58,6 +58,11 @@ class BiteAndBurpWebApp extends StatelessWidget {
               const NoTransitionPage(child: HelpSupportView()),
         ),
         GoRoute(
+          path: '/features',
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: FeaturesView()),
+        ),
+        GoRoute(
           path: '/menu/:hotelId/:tableId',
           builder: (context, state) {
             final hotelId = state.pathParameters['hotelId'] ?? '';
@@ -691,7 +696,7 @@ class _LandingPageViewState extends State<LandingPageView> {
             physics: const BouncingScrollPhysics(),
             child: Column(
               children: [
-                SizedBox(height: isMobile ? 100 : 140),
+                SizedBox(height: isMobile ? 100 : 80),
                 _buildHeroSection(isDesktop, isTablet, isMobile),
                 _buildTrustStrip(isDesktop),
                 _buildFeatureGrid(isDesktop, isTablet, isMobile),
@@ -1249,9 +1254,11 @@ class _LandingPageViewState extends State<LandingPageView> {
     ];
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(
-        horizontal: isDesktop ? 80 : 20,
-        vertical: 100,
+      padding: EdgeInsets.only(
+        left: isDesktop ? 80 : 20,
+        right: isDesktop ? 80 : 20,
+        top: 100,
+        bottom: 30,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -1411,9 +1418,11 @@ class _LandingPageViewState extends State<LandingPageView> {
 
   Widget _buildPricingSection(bool isDesktop) {
     return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: isDesktop ? 60 : 20,
-        vertical: 100,
+      padding: EdgeInsets.only(
+        left: isDesktop ? 60 : 20,
+        right: isDesktop ? 60 : 20,
+        top: 30,
+        bottom: 100,
       ),
       child: Column(
         children: [
@@ -1494,35 +1503,40 @@ class _LandingPageViewState extends State<LandingPageView> {
           onExit: (_) => setState(() => isHovered = false),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
-            constraints: BoxConstraints(
-              minHeight: isDesktop ? 580 : 0,
-            ), // Equal Heights on Desktop
-            width: isDesktop ? 350 : double.infinity,
-            padding: EdgeInsets.all(isDesktop ? 40 : 20),
+            curve: Curves.easeOutCubic,
+            constraints: BoxConstraints(minHeight: isDesktop ? 600 : 0),
+            width: isDesktop ? 360 : double.infinity,
+            padding: EdgeInsets.all(isDesktop ? 40 : 25),
             transform: Matrix4.identity()..scale(isHovered ? 1.02 : 1.0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30),
+              gradient: isHighlighted
+                  ? const LinearGradient(
+                      colors: [Color(0xFF3B0B59), Color(0xFF6B21A8)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    )
+                  : const LinearGradient(
+                      colors: [Colors.white, Color(0xFFFDFBFF)],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
               border: Border.all(
-                color: isHighlighted ? Colors.deepPurple : Colors.black12,
+                color: isHighlighted
+                    ? Colors.purpleAccent.withOpacity(0.5)
+                    : Colors.deepPurple.withOpacity(0.1),
                 width: isHighlighted ? 2 : 1,
               ),
-              color: isHighlighted ? Colors.deepPurple : Colors.white,
-              boxShadow: isHighlighted
-                  ? [
-                      BoxShadow(
-                        color: Colors.deepPurple.withAlpha(76),
-                        blurRadius: 30,
-                        spreadRadius: 5,
-                        offset: const Offset(0, 10),
-                      ),
-                    ]
-                  : [
-                      BoxShadow(
-                        color: Colors.black.withAlpha(13),
-                        blurRadius: 20,
-                        offset: const Offset(0, 10),
-                      ),
-                    ],
+              boxShadow: [
+                BoxShadow(
+                  color: isHighlighted
+                      ? Colors.deepPurple.withOpacity(isHovered ? 0.4 : 0.2)
+                      : Colors.black.withOpacity(isHovered ? 0.08 : 0.03),
+                  blurRadius: isHovered ? 40 : 20,
+                  spreadRadius: isHovered ? 5 : 0,
+                  offset: const Offset(0, 15),
+                ),
+              ],
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1530,70 +1544,100 @@ class _LandingPageViewState extends State<LandingPageView> {
               children: [
                 if (isHighlighted)
                   Container(
-                    margin: const EdgeInsets.only(bottom: 20),
+                    margin: const EdgeInsets.only(bottom: 25),
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
+                      horizontal: 14,
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.orangeAccent,
+                      gradient: const LinearGradient(
+                        colors: [Colors.orange, Colors.deepOrange],
+                      ),
                       borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.orange.withOpacity(0.4),
+                          blurRadius: 8,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
                     ),
                     child: const Text(
-                      "MOST POPULAR",
+                      "MOST POPULAR 🔥",
                       style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w900,
                         fontSize: 10,
-                        letterSpacing: 1,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white,
+                        letterSpacing: 1.2,
                       ),
                     ),
-                  ),
+                  )
+                else
+                  const SizedBox(height: 15),
                 Text(
                   title,
                   style: TextStyle(
-                    color: isHighlighted ? Colors.white : Colors.black,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w900,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.5,
+                    color: isHighlighted ? Colors.white70 : Colors.black54,
                   ),
                 ),
                 const SizedBox(height: 15),
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.baseline,
-                  textBaseline: TextBaseline.alphabetic,
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
                       price,
                       style: TextStyle(
-                        color: isHighlighted ? Colors.white : Colors.black,
-                        fontSize: 45,
+                        fontSize: 48,
                         fontWeight: FontWeight.w900,
+                        height: 1,
+                        color: isHighlighted ? Colors.white : Colors.black87,
                       ),
                     ),
-                    Text(
-                      suffix,
-                      style: TextStyle(
-                        color: isHighlighted ? Colors.white70 : Colors.black87,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                    if (suffix.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 6, left: 8),
+                        child: Text(
+                          suffix,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: isHighlighted
+                                ? Colors.white54
+                                : Colors.black45,
+                          ),
+                        ),
                       ),
-                    ),
                   ],
                 ),
-                const SizedBox(height: 40),
+                const SizedBox(height: 35),
+                const Divider(color: Colors.black12, height: 1),
+                const SizedBox(height: 30),
                 Column(
                   children: features
                       .map(
                         (f) => Padding(
-                          padding: const EdgeInsets.only(bottom: 16),
+                          padding: const EdgeInsets.only(bottom: 18),
                           child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Icon(
-                                Icons.check_circle,
-                                size: 20,
-                                color: isHighlighted
-                                    ? Colors.orangeAccent
-                                    : Colors.deepPurple,
+                              Container(
+                                padding: const EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                  color: isHighlighted
+                                      ? Colors.white.withOpacity(0.2)
+                                      : Colors.deepPurple.withOpacity(0.1),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  Icons.check_rounded,
+                                  color: isHighlighted
+                                      ? Colors.white
+                                      : Colors.deepPurple,
+                                  size: 14,
+                                ),
                               ),
                               const SizedBox(width: 12),
                               Expanded(
@@ -1601,9 +1645,10 @@ class _LandingPageViewState extends State<LandingPageView> {
                                   f,
                                   style: TextStyle(
                                     fontSize: 15,
+                                    height: 1.4,
                                     fontWeight: FontWeight.w600,
                                     color: isHighlighted
-                                        ? Colors.white70
+                                        ? Colors.white.withOpacity(0.9)
                                         : Colors.black87,
                                   ),
                                 ),
@@ -1620,29 +1665,48 @@ class _LandingPageViewState extends State<LandingPageView> {
                     'https://play.google.com/store/apps/details?id=com.biteandburp',
                     '_blank',
                   ),
-                  child: Container(
+                  borderRadius: BorderRadius.circular(16),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 18,
-                      horizontal: 10,
-                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 18),
                     decoration: BoxDecoration(
-                      color: isHighlighted
-                          ? Colors.white
-                          : Colors.deepPurple.withAlpha(13),
-                      borderRadius: BorderRadius.circular(12),
+                      color: isHighlighted ? Colors.white : Colors.deepPurple,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color:
+                              (isHighlighted ? Colors.white : Colors.deepPurple)
+                                  .withOpacity(isHovered ? 0.3 : 0.0),
+                          blurRadius: isHovered ? 15 : 0,
+                          offset: isHovered
+                              ? const Offset(0, 5)
+                              : const Offset(0, 0),
+                        ),
+                      ],
                     ),
-                    child: Center(
-                      child: FittedBox(
-                        child: Text(
-                          "Select Plan",
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Get Started Now",
                           style: TextStyle(
-                            color: Colors.deepPurple,
+                            color: isHighlighted
+                                ? Colors.deepPurple
+                                : Colors.white,
                             fontWeight: FontWeight.w900,
                             fontSize: 16,
                           ),
                         ),
-                      ),
+                        const SizedBox(width: 8),
+                        Icon(
+                          Icons.arrow_forward_rounded,
+                          size: 18,
+                          color: isHighlighted
+                              ? Colors.deepPurple
+                              : Colors.white,
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -2083,13 +2147,13 @@ class _HelpSupportViewState extends State<HelpSupportView> {
     final String phone = _phoneController.text.trim();
     final String reason = _reasonController.text.trim();
 
-    final String subject = Uri.encodeComponent("Support Request from $userId");
-    final String body = Uri.encodeComponent(
-      "App User ID / Restaurant ID: $userId\n"
-      "Registered Email: $email\n"
-      "Phone Number: $phone\n\n"
-      "Detailed Reason / Comments:\n$reason",
-    );
+    final String subject = "Support Request from $userId";
+    final String body =
+        "App User ID / Restaurant ID: $userId\n"
+        "Registered Email: $email\n"
+        "Phone Number: $phone\n\n"
+        "Detailed Reason / Comments:\n$reason\n\n"
+        "(Note: Please attach any relevant screenshots directly to this email before sending.)";
 
     String encodedSubject = Uri.encodeComponent(subject);
     String encodedBody = Uri.encodeComponent(body);
@@ -2237,15 +2301,16 @@ class _HelpSupportViewState extends State<HelpSupportView> {
 
   Widget _buildContactCard(bool isDesktop) {
     return Container(
-      padding: EdgeInsets.all(isDesktop ? 32 : 20),
+      padding: const EdgeInsets.all(30),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(10),
+            color: Colors.black.withOpacity(0.05),
             blurRadius: 20,
-            offset: const Offset(0, 10),
+            spreadRadius: 5,
+            offset: const Offset(0, 5),
           ),
         ],
       ),
@@ -2257,15 +2322,16 @@ class _HelpSupportViewState extends State<HelpSupportView> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFEDE9FE),
+                  color: Colors.deepPurple.shade50,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(
                   Icons.headset_mic_rounded,
                   color: Colors.deepPurple,
+                  size: 28,
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 15),
               const Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -2274,13 +2340,13 @@ class _HelpSupportViewState extends State<HelpSupportView> {
                       "Get Support",
                       style: TextStyle(
                         fontSize: 22,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w900,
                       ),
                     ),
                     SizedBox(height: 4),
                     Text(
                       "Our dedicated support team is available to help you.",
-                      style: TextStyle(color: Colors.black54, fontSize: 14),
+                      style: TextStyle(color: Colors.black54),
                     ),
                   ],
                 ),
@@ -2306,7 +2372,6 @@ class _HelpSupportViewState extends State<HelpSupportView> {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             subtitle: const Text("support@biteandburp.com"),
-            trailing: const Icon(Icons.chevron_right, color: Colors.grey),
           ),
           const Divider(height: 20),
           ListTile(
@@ -2323,8 +2388,7 @@ class _HelpSupportViewState extends State<HelpSupportView> {
               "Quick Response",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            subtitle: const Text("We respond within 24 hours"),
-            trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+            subtitle: const Text("We respond within 1-2 hours"),
           ),
           const Divider(height: 20),
           ListTile(
@@ -2345,104 +2409,6 @@ class _HelpSupportViewState extends State<HelpSupportView> {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             subtitle: const Text("Your information is safe with us"),
-            trailing: const Icon(Icons.chevron_right, color: Colors.grey),
-          ),
-          const SizedBox(height: 30),
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF5F3FF),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFDDD6FE)),
-            ),
-            child: isDesktop
-                ? Row(
-                    children: [
-                      const Icon(
-                        Icons.help_outline_rounded,
-                        color: Colors.deepPurple,
-                        size: 28,
-                      ),
-                      const SizedBox(width: 12),
-                      const Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Need Immediate Help?",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.deepPurple,
-                              ),
-                            ),
-                            Text(
-                              "Check our FAQ section for quick answers",
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.black54,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {},
-                        child: const Text(
-                          "View FAQs →",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ],
-                  )
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Row(
-                        children: [
-                          Icon(
-                            Icons.help_outline_rounded,
-                            color: Colors.deepPurple,
-                            size: 22,
-                          ),
-                          SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              "Need Immediate Help?",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.deepPurple,
-                                fontSize: 14,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 6),
-                      const Text(
-                        "Check our FAQ section for quick answers",
-                        style: TextStyle(fontSize: 12, color: Colors.black54),
-                      ),
-                      const SizedBox(height: 4),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton(
-                          onPressed: () {},
-                          style: TextButton.styleFrom(
-                            padding: EdgeInsets.zero,
-                            minimumSize: const Size(40, 28),
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                          child: const Text(
-                            "View FAQs →",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 13,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
           ),
         ],
       ),
@@ -2568,6 +2534,31 @@ class _HelpSupportViewState extends State<HelpSupportView> {
               validator: (v) => v!.trim().isEmpty ? "Required field" : null,
             ),
             const SizedBox(height: 20),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                ActionChip(
+                  label: const Text("Account Deletion"),
+                  onPressed: () => setState(
+                    () => _reasonController.text =
+                        "I want to request account deletion because...",
+                  ),
+                ),
+                ActionChip(
+                  label: const Text("Subscription Request"),
+                  onPressed: () => setState(
+                    () => _reasonController.text =
+                        "I want to know about subscription plans...",
+                  ),
+                ),
+                ActionChip(
+                  label: const Text("Custom / Other"),
+                  onPressed: () => setState(() => _reasonController.text = ""),
+                ),
+              ],
+            ),
+            const SizedBox(height: 15),
             TextFormField(
               controller: _reasonController,
               maxLines: 4,
@@ -2638,6 +2629,192 @@ class _HelpSupportViewState extends State<HelpSupportView> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class FeaturesView extends StatelessWidget {
+  const FeaturesView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    bool isDesktop = MediaQuery.of(context).size.width > 900;
+    bool isTablet = MediaQuery.of(context).size.width > 600 && !isDesktop;
+    bool isMobile = MediaQuery.of(context).size.width <= 600;
+
+    final features = [
+      {
+        "t": "Contactless QR Menu",
+        "d":
+            "Customers scan, order, and pay directly. Speeds up table turnover by 30%.",
+        "i": Icons.qr_code_scanner,
+        "c": Colors.orangeAccent.shade700,
+      },
+      {
+        "t": "Captain Waiter Pad",
+        "d":
+            "Equip staff with mobile devices. Punch KOTs right from the table directly to the kitchen.",
+        "i": Icons.touch_app,
+        "c": Colors.blueAccent,
+      },
+      {
+        "t": "Smart Inventory",
+        "d":
+            "Connect recipes to items. Auto-deduct raw materials like Maida/Oil the moment a dish sells.",
+        "i": Icons.inventory_2_outlined,
+        "c": Colors.green.shade600,
+      },
+      {
+        "t": "Live Cashbook",
+        "d":
+            "Manage vendor payouts, staff salaries, cash, and UPI settlements in one integrated ledger.",
+        "i": Icons.account_balance_wallet,
+        "c": Colors.deepPurple,
+      },
+      {
+        "t": "Offline Resilience",
+        "d":
+            "Internet down? No problem. Continue billing and sync everything when you're back online.",
+        "i": Icons.wifi_off,
+        "c": Colors.cyan.shade700,
+      },
+    ];
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => GoRouter.of(context).go('/home'),
+        ),
+        title: const Text(
+          "App Features",
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          width: double.infinity,
+          padding: EdgeInsets.symmetric(
+            horizontal: isDesktop ? 80 : 20,
+            vertical: 50,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text(
+                "CORE ECOSYSTEM",
+                style: TextStyle(
+                  color: Colors.deepPurple,
+                  fontWeight: FontWeight.w900,
+                  fontSize: 14,
+                  letterSpacing: 2,
+                ),
+              ),
+              const SizedBox(height: 15),
+              const Text(
+                "Everything you need.\nZero chaos.",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 45,
+                  fontWeight: FontWeight.w900,
+                  height: 1.1,
+                ),
+              ),
+              const SizedBox(height: 60),
+              Wrap(
+                spacing: 25,
+                runSpacing: 25,
+                alignment: WrapAlignment.center,
+                children: features.map((f) {
+                  return StatefulBuilder(
+                    builder: (context, setState) {
+                      bool isHovered = false;
+                      return MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        onEnter: (_) => setState(() => isHovered = true),
+                        onExit: (_) => setState(() => isHovered = false),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeOutCubic,
+                          width: isMobile
+                              ? double.infinity
+                              : (isTablet ? 300 : 340),
+                          padding: EdgeInsets.all(isMobile ? 20 : 30),
+                          transform: Matrix4.identity()
+                            ..scale(isHovered ? 1.03 : 1.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                            color: Colors.white,
+                            border: Border.all(
+                              color: isHovered
+                                  ? (f['c'] as Color).withAlpha(127)
+                                  : Colors.black12,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: isHovered
+                                    ? (f['c'] as Color).withAlpha(38)
+                                    : Colors.black.withAlpha(8),
+                                blurRadius: isHovered ? 30 : 15,
+                                spreadRadius: isHovered ? 5 : 0,
+                                offset: const Offset(0, 10),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: (f['c'] as Color).withAlpha(25),
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: Icon(
+                                  f['i'] as IconData,
+                                  color: f['c'] as Color,
+                                  size: 35,
+                                ),
+                              ),
+                              const SizedBox(height: 25),
+                              Text(
+                                f['t'] as String,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 20,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                f['d'] as String,
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  color: Colors.black87,
+                                  fontSize: 15,
+                                  height: 1.5,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
         ),
       ),
     );
