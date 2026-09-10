@@ -609,7 +609,7 @@ class _LandingPageViewState extends State<LandingPageView> {
                   ),
                   const SizedBox(height: 12),
                   const Text(
-                    "BITE & BURP",
+                    "Bite&Burp",
                     style: TextStyle(
                       color: Colors.deepPurple,
                       fontWeight: FontWeight.w900,
