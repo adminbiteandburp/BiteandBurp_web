@@ -807,16 +807,7 @@ class _LandingPageViewState extends State<LandingPageView> {
             text: const TextSpan(
               children: [
                 TextSpan(
-                  text: "BITE",
-                  style: TextStyle(
-                    color: Colors.deepPurple,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1,
-                  ),
-                ),
-                TextSpan(
-                  text: " & ",
+                  text: "Bite",
                   style: TextStyle(
                     color: Colors.deepPurple,
                     fontSize: 24,
@@ -824,12 +815,19 @@ class _LandingPageViewState extends State<LandingPageView> {
                   ),
                 ),
                 TextSpan(
-                  text: "BURP",
+                  text: "&",
                   style: TextStyle(
                     color: Colors.deepPurple,
                     fontSize: 24,
                     fontWeight: FontWeight.w900,
-                    letterSpacing: 1,
+                  ),
+                ),
+                TextSpan(
+                  text: "Burp",
+                  style: TextStyle(
+                    color: Colors.deepPurple,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w900,
                   ),
                 ),
               ],
