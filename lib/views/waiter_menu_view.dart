@@ -270,16 +270,26 @@ class _WaiterMenuViewState extends State<WaiterMenuView> {
           'time': FieldValue.serverTimestamp(),
           'status': 'Auto-Accept',
         })
-        .catchError((e) => debugPrint("Background Order error: $e"));
-
-    setState(() {
-      itemNotes.clear();
-      showNoteField.clear();
-      overallNote = "";
-      showOverallNote = false;
-      cart.clear();
-      isFiringKOT = false;
-    });
+        .then((_) {
+          if (mounted) {
+            setState(() {
+              itemNotes.clear();
+              showNoteField.clear();
+              overallNote = "";
+              showOverallNote = false;
+              cart.clear();
+              isFiringKOT = false;
+            });
+          }
+        })
+        .catchError((e) {
+          debugPrint("Background Order error: $e");
+          if (mounted) {
+            setState(() {
+              isFiringKOT = false;
+            });
+          }
+        });
 
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(

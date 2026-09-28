@@ -10,11 +10,13 @@ import 'dart:html' as html;
 
 import 'firebase_options.dart';
 import 'dart:ui'; // 🌟 NEW: For Glassmorphism effects
+import 'package:flutter_web_plugins/url_strategy.dart';
 import 'views/customer_menu_view.dart';
 import 'views/waiter_menu_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  usePathUrlStrategy();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const BiteAndBurpWebApp());
 }
